@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Someone's Node Site</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <header>
+      <nav class="navbar navbar-inverse">
+        <a href="/" class="navbar-brand">someone's site</a>
+        <ul class="nav navbar-nav">
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+<!-- MAIN CONTENT HERE -->
+<%- defineContent('hero') %>
+
+<main>
+  <div class="container">
+    <%- body %>
+  </div>
+</main>
+
+    <footer>
+      le site &copy; 2016
+    </footer>
+  </body>
+</html>
