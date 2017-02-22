@@ -11,7 +11,7 @@ module.exports = router;
 
 // route for homepage
 router.get('/', function (req, res) {
-  res.render('pages/index');
+  res.render('pages/home');
 });
 
 // route for about page
@@ -26,3 +26,8 @@ router.get('/contact', function (req, res) {
 router.post('/contact', function (req, res) {
 
 });
+
+// route for levs html page
+router.get('/levs-html-page', function (req, res) {
+  res.render('pages/levs-html-page')
+})

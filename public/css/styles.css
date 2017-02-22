@@ -1,13 +1,13 @@
 body {
-  background-color: gray;
+  background-color: silver;
 }
 
 .hero {
   background-image: url("../img/Pasted image at 2017_02_20 10_26 AM.png");
   background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
-  padding: 50px 0;
+  background-size: contain;
+  background-position: right center;
+  padding: 50px;
   min-height: 500px;
   position: relative;
 }
