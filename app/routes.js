@@ -30,4 +30,14 @@ router.post('/contact', function (req, res) {
 // route for levs html page
 router.get('/levs-html-page', function (req, res) {
   res.render('pages/levs-html-page')
-})
+});
+
+// route for palindromes
+router.get('/pals-html-page', function (req, res) {
+  res.render('pages/pals-html-page');
+});
+
+// route for hanoi towers
+router.get('/hanois-html-page', function (req, res) {
+  res.render('pages/hanois-html-page');
+});
