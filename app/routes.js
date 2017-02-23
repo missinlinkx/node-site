@@ -23,7 +23,14 @@ router.get('/about', function (req, res) {
 router.get('/contact', function (req, res) {
   res.render('pages/contact');
 });
+
 router.post('/contact', function (req, res) {
+
+    //res.write('you posted:\n');
+    res.render('pages/contact', {
+      fn: req.body.guestbookfirstname,
+      ln: req.body.guestbooklastname
+    });
 
 });
 

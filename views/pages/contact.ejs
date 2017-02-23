@@ -1,5 +1,21 @@
 <div class="jumbotron text-center">
   <h1>Contact page</h1>
+  <p>Enter your first and last name below to sign the cat's guestbook:</p>
+  <form class="form-inline" method="POST">
+    <div class="form-group">
+      <label class="sr-only" for="exampleInputEmail3">First Name</label>
+      <input type="text" class="form-control" id="guestbookfirstname" name="guestbookfirstname" placeholder="First Name">
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="exampleInputPassword3">Last Name</label>
+      <input type="text" class="form-control" id="guestbooklastname" name="guestbooklastname" placeholder="Last Name">
+    </div>
+    <button type="submit" class="btn btn-info">Sign it!</button>
+  </form>
 
-  <p>form goes here</p>
+  <% if (locals.fn && locals.ln) { %>
+  <p id="signed"><%- "Thank you, " + locals.fn + " " + locals.ln %></p>
+  <% } else { %>
+    <p>Hey there!</p>
+  <% } %>
 </div>
