@@ -5,14 +5,24 @@
   </head>
   <body>
     <h2>Palindrome solver</h2>
-    <p>Enter word to solve for:</p>
-    <div>
-      <p>
-        <input type="text" id="word" value="">
-      </p>
-      <button id="activate">Click here to show solution</button>
+
+      <form class="form-inline" method="POST">
+        <div class="form-group">
+          <label class="sr-only" for="word">Word</label>
+          <input type="text" class="form-control" id="word" name="word" placeholder="Enter word to solve for">
+        </div>
+        <button type="submit" class="btn btn-info">Solve it!</button>
+      </form>
+
+      <% if (Array.isArray(locals.result)) { %>
+        <p><%= 'We have a palindrome! ' + locals.result[0] + ', in ' + locals.result[1] + ' steps' %></p>
+      <% } else if (locals.result === false) { %>
+        <p>This word cannot be a palindrome</p>
+      <% } else { %>
+        <p> Enter a word in the box above to turn it into a palindrome </p>
+      <% } %>
+
       <p id="solution"></p>
-    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="../../JS/pals-for-html.js"></script>
 
