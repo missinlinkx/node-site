@@ -99,7 +99,6 @@ function solver (str) {
   var step = 0;
   for (var i=0;i<letters.length/2;i++) {
     if (check(letters)) {//check if word is already a palindrome
-      // console.log('we have a palindrome!',reanimator(letters), 'in',step,'steps');
       return [reanimator(letters), step];
     }
 

@@ -2,6 +2,8 @@
 var express = require('express');
 var path = require('path');
 var palindrome = require('../palindr-serv.js');
+var levenshtein = require('../lev-serv.js');
+var hanoi = require('../hanoi-serv.js');
 
 // create router object
 var router = express.Router();
@@ -34,7 +36,13 @@ router.post('/contact', function (req, res) {
 
 // route for levs html page
 router.get('/levs-html-page', function (req, res) {
-  res.render('pages/levs-html-page')
+  res.render('pages/levs-html-page');
+});
+router.post('/levs-html-page', function (req,res) {
+  var value = levenshtein(req.body.str1, req.body.str2);
+  res.render('pages/levs-html-page', {
+    result: value
+  });
 });
 
 // route for palindromes
@@ -51,4 +59,10 @@ router.post('/pals-html-page', function (req, res) {
 // route for hanoi towers
 router.get('/hanois-html-page', function (req, res) {
   res.render('pages/hanois-html-page');
+});
+router.post('/hanois-html-page', function (req,res) {
+  var value = hanoi(req.body.n);
+  res.render('pages/hanois-html-page', {
+    result: value
+  });
 });

@@ -1,9 +1,11 @@
-var run = require('./palindr-serv.js');
+var run = require('./hanoi-serv.js');
 
-var result = run('abc');
+var result = run(3);
 
 if (result) {
-  console.log('we have a palindrome!', result[0], 'in', result[1],'steps');
+  result.forEach(function (item, idx) {
+    console.log(idx+1,":",item);
+  });
 } else {
-  console.log('this word cannot be a palindrome');
+  console.log('whoops?');
 }
