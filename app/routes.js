@@ -1,6 +1,7 @@
 // require express
 var express = require('express');
 var path = require('path');
+
 var palindrome = require('../palindr-serv.js');
 var levenshtein = require('../lev-serv.js');
 var hanoi = require('../hanoi-serv.js');
@@ -13,6 +14,7 @@ module.exports = router;
 
 // route for homepage
 router.get('/', function (req, res) {
+  res.cookie('your_name', 'value');
   res.render('pages/home');
 });
 
@@ -36,7 +38,11 @@ router.post('/contact', function (req, res) {
 
 // route for levs html page
 router.get('/levs-html-page', function (req, res) {
-  res.render('pages/levs-html-page');
+  if (req.cookies.your_name === 'value') {
+    return res.render('pages/levs-html-page');
+  }
+
+  res.redirect('/');
 });
 router.post('/levs-html-page', function (req,res) {
   var value = levenshtein(req.body.str1, req.body.str2);

@@ -4,7 +4,10 @@ var expressLayouts = require('express-ejs-layouts');
 var app = express();
 var port = 8080;
 
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+
+app.use(cookieParser());
 
 // use ejs and express layouts
 app.set('view engine', 'ejs');
