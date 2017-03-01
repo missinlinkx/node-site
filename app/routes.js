@@ -15,7 +15,13 @@ module.exports = router;
 // route for homepage
 router.get('/', function (req, res) {
   res.cookie('your_name', 'value');
-  res.render('pages/home');
+
+  var model = {
+    lev: req.session.visitLev
+  };
+  req.session.visitLev = false;
+
+  res.render('pages/home', model);
 });
 
 // route for about page
@@ -39,9 +45,9 @@ router.post('/contact', function (req, res) {
 // route for levs html page
 router.get('/levs-html-page', function (req, res) {
   if (req.cookies.your_name === 'value') {
+    req.session.visitLev = true;
     return res.render('pages/levs-html-page');
   }
-
   res.redirect('/');
 });
 router.post('/levs-html-page', function (req,res) {
@@ -53,22 +59,32 @@ router.post('/levs-html-page', function (req,res) {
 
 // route for palindromes
 router.get('/pals-html-page', function (req, res) {
-  res.render('pages/pals-html-page');
+  req.session.flashes['message'] = 'were the palindromes any fun?';
+  model = {
+    result: req.flash.result
+  }
+  res.render('pages/pals-html-page', model);
 });
 router.post('/pals-html-page', function (req, res) {
   var value = palindrome(req.body.word);
-  res.render('pages/pals-html-page', {
-    result: value
-  });
+  req.session.flashes['result'] = value;
+  res.redirect('/pals-html-page');
 });
 
 // route for hanoi towers
 router.get('/hanois-html-page', function (req, res) {
-  res.render('pages/hanois-html-page');
+  console.log("@hanoi",req.flash);
+  var model = {
+    message: req.flash.message,
+    result: req.flash.result
+  }
+  res.render('pages/hanois-html-page', model);
 });
 router.post('/hanois-html-page', function (req,res) {
   var value = hanoi(req.body.n);
-  res.render('pages/hanois-html-page', {
-    result: value
-  });
+  req.session.flashes['result'] = value;
+  res.redirect('/hanois-html-page');
+  // res.render('pages/hanois-html-page', {
+  //   result: value
+  // });
 });

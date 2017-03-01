@@ -20,7 +20,7 @@ header .navbar {
 }
 
 .hero-content {
-  background-color: rgba(122, 148, 255, 0.25);
+  background-color: rgba(122, 148, 255, 0.3);
   position: absolute;
   top: 50%;
   text-align: center;
@@ -36,6 +36,10 @@ header .navbar {
   color: rgb(255 , 230, 210);
   font-size: 20px;
   margin-bottom: 30px;
+}
+
+.alert p{
+  color: rgb(122, 148, 255);
 }
 
 main {

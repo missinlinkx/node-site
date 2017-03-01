@@ -1,15 +1,20 @@
 <%- contentFor('title') %>
 home is where the wifi connects automatically
 
-
 <%- contentFor('hero') %>
 <section class="hero">
   <div class="hero-content">
     <h2>Home is where the wifi connects automatically</h2>
     <p>I have no idea how this tutorial lady's text editor keeps predicting huge globs of text for her, but it's frustrating</p>
-
-    <!-- <a href="/" class="btn btn-lg btn-primary">get started, zice</a>
-    <a href="/contact" class="btn btn-lg btn-primary">si contact, cica</a> -->
+    <% if (locals.lev === true) { %>
+    <div class="alert alert-success" role="alert">
+      <p>So, how was the Levenshtein distance calculator?</p>
+    </div>
+    <% } else { %>
+    <div class="alert alert-danger" role="alert">
+      <p>You should visit Lev :-></p>
+    </div>
+    <% } %>
   </div>
 </section>
 

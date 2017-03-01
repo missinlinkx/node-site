@@ -4,6 +4,11 @@
     <title>Home</title>
   </head>
   <body>
+    <% if (locals.message) { %>
+      <div class="alert alert-warning">
+        <p><%= locals.message %></p>
+      </div>
+    <% } %>
     <h2>Hanoi Towers solver</h2>
     <div class="row">
       <form class="form-horizontal" method="POST">
