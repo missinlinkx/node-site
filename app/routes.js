@@ -73,7 +73,6 @@ router.post('/pals-html-page', function (req, res) {
 
 // route for hanoi towers
 router.get('/hanois-html-page', function (req, res) {
-  console.log("@hanoi",req.flash);
   var model = {
     message: req.flash.message,
     result: req.flash.result
@@ -84,7 +83,4 @@ router.post('/hanois-html-page', function (req,res) {
   var value = hanoi(req.body.n);
   req.session.flashes['result'] = value;
   res.redirect('/hanois-html-page');
-  // res.render('pages/hanois-html-page', {
-  //   result: value
-  // });
 });
