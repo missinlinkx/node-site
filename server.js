@@ -13,6 +13,11 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(cookieParser());
 
+app.use(function (req, res, next) {
+  console.log('OHAI ' + req.url);
+  next();
+});
+
 app.use(sessionCookie());
 
 app.use(sessionFlashes());

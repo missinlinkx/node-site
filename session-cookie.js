@@ -1,15 +1,28 @@
-var counter = 0;
-var session = {};
+const uuidV4 = require('uuid/v4');
+var Redis = require('ioredis');
+var redis = new Redis();
 
 module.exports = function() {
-  return function(req,res,next) {
-    var sid = req.cookies.sid;
-    if (sid === undefined) {
-      sid = counter++;
-      res.cookie('sid', ''+sid);
-      session[sid] = {};
+  return function(req, res, next) {
+    var sid = req.cookies.sid || ('' + uuidV4());
+
+    res.on('finish', function () {
+      console.log('Saving session ' + sid + ' to REDIS!!!11', JSON.stringify(req.session));
+      redis.set('sid.'+sid, JSON.stringify(req.session), 'EX', 30 * 60);
+    });
+
+    if (req.cookies.sid === undefined) {
+      console.log('creating new session', sid);
+      res.cookie('sid', sid);
+      req.session = {};
+      return next();
     }
-    req.session = session[sid];
-    next();
+
+    console.log('Getting session ' + sid + ' from REDIS!!')
+    return redis.get('sid.'+sid, function (err, sessionData) {
+      console.log('Session data for session ' + sid, sessionData);
+      req.session = JSON.parse(sessionData) || {};
+      next();
+    });
   }
 }
