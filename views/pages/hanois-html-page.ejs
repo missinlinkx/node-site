@@ -9,36 +9,40 @@
         <p><%= locals.message %></p>
       </div>
     <% } %>
-    <h2>Hanoi Towers solver</h2>
-    <div class="row">
-      <form class="form-horizontal" method="POST">
-          <div class="col-xs-3">
-            <label for="n">Select number of disks to solve for:</label>
-            <div class="form-horizontal">
-            <select id="n" name="n" class="form-control">
-              <option>1</option>
-              <option>2</option>
-              <option>3</option>
-              <option>4</option>
-              <option>5</option>
-              <option>6</option>
-              <option>7</option>
-              <option>8</option>
-            </select>
-          </div>
-            <button type="submit" class="btn btn-info">Solve it!</button>
-        </div>
-      </form>
-    </div>
-    <div class="row">
-      <% if (locals.result) { %>
-        <% locals.result.forEach(function(move,idx){ %>
-          <p><%= "move " + (idx+1) + ": " + "disk: " + move.disk + " from: " + move.from + " to: " + move.to %></p>
-        <% }); %>
-      <% } %>
-  </div>
 
+    <div class="jumbotron">
+      <div class="container">
+        <h2>Hanoi Towers solver</h2>
+        <div class="row">
+          <form class="form-horizontal" method="POST">
+            <div class="col-xs-3">
+              <label for="n">Select number of disks to solve for:</label>
+              <div class="form-horizontal">
+                <select id="n" name="n" class="form-control">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                  <option>6</option>
+                  <option>7</option>
+                  <option>8</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-info">Solve it!</button>
+            </div>
+          </form>
+        </div>
+        <div class="row">
+          <% if (locals.result) { %>
+            <% locals.result.forEach(function(move,idx){ %>
+              <p><%= "move " + (idx+1) + ": " + "disk: " + move.disk + " from: " + move.from + " to: " + move.to %></p>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
     </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <!-- <script src="../../JS/hanoi.js"></script> -->
 
