@@ -17,7 +17,8 @@ router.get('/', function (req, res) {
   res.cookie('your_name', 'value');
 
   var model = {
-    lev: req.session.visitLev
+    lev: req.session.visitLev,
+    alert: req.flash.loginStatus
   };
   req.session.visitLev = false;
 
@@ -83,4 +84,27 @@ router.post('/hanois-html-page', function (req,res) {
   var value = hanoi(req.body.n);
   req.session.flashes['result'] = value;
   res.redirect('/hanois-html-page');
+});
+
+// route for login
+router.get('/login', function (req, res) {
+  var model = {
+    warning: req.flash.loginStatus
+  }
+  res.render('pages/login', model);
+});
+router.post('/login', function (req,res) {
+  var user = {
+    username: req.body.username,
+    password: req.body.password
+  }
+  if (user.username === 'jeanluc' && user.password === 'earlgr3y') {
+    req.session['username'] = user.username;
+    req.session['loggedIn'] = true;
+    req.session.flashes['loginStatus'] = 'successful';
+    return res.redirect('/');
+  }
+
+  req.session.flashes['loginStatus'] = 'unsuccessful';
+  res.redirect('/login');
 });

@@ -22,6 +22,8 @@ app.use(sessionCookie());
 
 app.use(sessionFlashes());
 
+
+
 // use ejs and express layouts
 app.set('view engine', 'ejs');
 app.use(expressLayouts);
