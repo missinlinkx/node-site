@@ -1,6 +1,6 @@
-<% if (locals.warning === 'unsuccessful') { %>
+<% if (locals.errorMessage) { %>
   <div class="alert alert-warning">
-    <p>Login unsuccessful, please try again</p>
+    <%= locals.flashes.errorMessage %>
   </div>
 <% } %>
 

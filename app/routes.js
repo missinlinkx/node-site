@@ -115,11 +115,20 @@ router.post('/login', function (req,res) {
   }
   if (user.username === 'jeanluc' && user.password === 'earlgr3y') {
     req.session['username'] = user.username;
-    req.session['loggedIn'] = true;
     req.session.flashes['successMessage'] = 'You were successfully logged in!';
+    req.session['loggedIn'] = true;
+    req.session['username'] = user.username;
     return res.redirect('/');
   }
-
-  req.session.flashes['loginStatus'] = 'unsuccessful';
+  req.session.flashes['errorMessage'] = 'Login unsuccessful, please try again';
   res.redirect('/login');
+});
+
+// route for logout
+router.get('/logout', function (req, res) {
+  delete req.session['username'];
+  delete res.locals['username'];
+  req.session['loggedIn'] = false;
+  res.locals['loggedIn'] = false;
+  res.render('pages/logout');
 });
