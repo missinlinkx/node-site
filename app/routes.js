@@ -1,7 +1,7 @@
 // require express
 var express = require('express');
 var path = require('path');
-
+var authGuardModule = require('../auth-guard.js');
 var palindrome = require('../palindr-serv.js');
 var levenshtein = require('../lev-serv.js');
 var hanoi = require('../hanoi-serv.js');
@@ -9,8 +9,22 @@ var hanoi = require('../hanoi-serv.js');
 // create router object
 var router = express.Router();
 
+var authGuard = authGuardModule({
+  redirectUrl: '/login'
+});
+
 // export router
 module.exports = router;
+
+// // save username
+// var saveU = function () {
+//   var username = req.session.username;
+//   if (username) {
+//     res.locals.username = username;
+//   }
+//   next();
+// }
+// saveU();
 
 // route for homepage
 router.get('/', function (req, res) {
@@ -44,7 +58,8 @@ router.post('/contact', function (req, res) {
 });
 
 // route for levs html page
-router.get('/levs-html-page', function (req, res) {
+router.get('/levs-html-page', authGuard,
+function (req, res) {
   if (req.cookies.your_name === 'value') {
     req.session.visitLev = true;
     return res.render('pages/levs-html-page');
@@ -101,7 +116,7 @@ router.post('/login', function (req,res) {
   if (user.username === 'jeanluc' && user.password === 'earlgr3y') {
     req.session['username'] = user.username;
     req.session['loggedIn'] = true;
-    req.session.flashes['loginStatus'] = 'successful';
+    req.session.flashes['successMessage'] = 'You were successfully logged in!';
     return res.redirect('/');
   }
 

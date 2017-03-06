@@ -30,6 +30,22 @@
 
     </header>
 
+<% if (locals.flashes.errorMessage) { %>
+  <div class="container">
+    <div class="alert alert-danger" role="alert">
+      <%= locals.flashes.errorMessage %>
+    </div>
+  </div>
+<% } %>
+
+<% if (locals.flashes.successMessage) { %>
+  <div class="container">
+    <div class="alert alert-success" role="alert">
+      <%= locals.flashes.successMessage %>
+    </div>
+  </div>
+<% } %>
+
 <!-- MAIN CONTENT HERE -->
 <%- defineContent('hero') %>
 
