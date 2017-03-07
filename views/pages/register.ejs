@@ -1,0 +1,66 @@
+<% if (locals.errorMessage) { %>
+  <div class="alert alert-warning">
+    <%= locals.flashes.errorMessage %>
+  </div>
+<% } %>
+
+<div class="jumbotron">
+
+  <h1>User registration</h1>
+  <p>Fill in the form below to register as a user:</p>
+
+  <form class="form" method="POST">
+    <div class="form-group">
+      <label class="control-label" for="username">Username</label>
+      <input type="text" class="form-control" id="username" name="username" placeholder="Username" value=<%= locals.username %>>
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="password">Password</label>
+      <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="password">Confirm Password</label>
+      <input type="password" class="form-control" id="pwdconf" name="pwdconf" placeholder="Confirm Password">
+    </div>
+    <div class="form-group">
+      <label class="control-label" for="age">Age</label>
+      <input type="number" class="form-control" id="age" name="age" placeholder="Age">
+    </div>
+
+    <div class="col-sm-offset-0">
+      <p>Please select your favourite algorithm:</p>
+      <div class="radio">
+        <label>
+          <input type="radio" name="algorithmRadios" id="algorithmRadios1" value="Levenshtein's distance" checked>
+          Levenshtein's distance
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="algorithmRadios" id="algorithmRadios2" value="Hanoi towers">
+          Hanoi towers
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="algorithmRadios" id="algorithmRadios3" value="Palindrome solver">
+          Palindrome solver
+        </label>
+      </div>
+      <div class="radio disabled">
+        <label>
+          <input type="radio" name="algorithmRadios" id="algorithmRadios4" value="Queens" disabled>
+          Queens - <em>not yet available</em>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-offset-0 col-sm-10">
+        <button type="submit" class="btn btn-primary">Register</button>
+      </div>
+    </div>
+  </form>
+
+
+</div>

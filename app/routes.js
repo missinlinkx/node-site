@@ -2,6 +2,8 @@
 var express = require('express');
 var path = require('path');
 var authGuardModule = require('../auth-guard.js');
+var User = require('./models/user/user-model.js');
+var addUser = require('./models/user/new-user.js');
 var palindrome = require('../palindr-serv.js');
 var levenshtein = require('../lev-serv.js');
 var hanoi = require('../hanoi-serv.js');
@@ -15,16 +17,6 @@ var authGuard = authGuardModule({
 
 // export router
 module.exports = router;
-
-// // save username
-// var saveU = function () {
-//   var username = req.session.username;
-//   if (username) {
-//     res.locals.username = username;
-//   }
-//   next();
-// }
-// saveU();
 
 // route for homepage
 router.get('/', function (req, res) {
@@ -109,19 +101,27 @@ router.get('/login', function (req, res) {
   res.render('pages/login', model);
 });
 router.post('/login', function (req,res) {
-  var user = {
+  var formData = {
     username: req.body.username,
     password: req.body.password
   }
-  if (user.username === 'jeanluc' && user.password === 'earlgr3y') {
-    req.session['username'] = user.username;
-    req.session.flashes['successMessage'] = 'You were successfully logged in!';
-    req.session['loggedIn'] = true;
-    req.session['username'] = user.username;
-    return res.redirect('/');
-  }
-  req.session.flashes['errorMessage'] = 'Login unsuccessful, please try again';
-  res.redirect('/login');
+  User.find({username: formData.username}, function(err, user){
+    if(err) throw error;
+    console.log('formData', formData);
+    console.log('DBuser', user);
+    console.log('DBuser pw', user[0].password);
+    if (user[0].password === formData.password) {
+      req.session['username'] = formData.username;
+      req.session.flashes['successMessage'] = 'You were successfully logged in!';
+      req.session['loggedIn'] = true;
+      req.session['username'] = formData.username;
+      return res.redirect('/');
+    } else {
+      req.session.flashes['errorMessage'] = 'Login unsuccessful, please try again';
+      res.redirect('/login');
+    }
+  });
+
 });
 
 // route for logout
@@ -131,4 +131,38 @@ router.get('/logout', function (req, res) {
   req.session['loggedIn'] = false;
   res.locals['loggedIn'] = false;
   res.render('pages/logout');
+});
+
+// route for registration
+router.get('/register', function (req, res) {
+  res.render('pages/register');
+});
+router.post('/register', function (req, res) {
+  var formData = {
+    username: req.body.username,
+    password: req.body.password,
+    pwdconf: req.body.pwdconf,
+    meta: { age: req.body.age,
+      favAlg: req.body.algorithmRadios
+    }
+  }
+
+  addUser(formData, function (err, savedUser) {
+    if (err) {
+      var errorMessage = err;
+      if (Array.isArray(err)) {
+        errorMessage = err.join(', ');
+      }
+      req.session.flashes['errorMessage'] = errorMessage;
+      req.session['username'] = req.body.username;
+      //SHOULD MOVE ABOVE TO FLASH, SAVE AS PREVIOUS REQ FORMDATA
+
+      return res.redirect('/register')
+    }
+
+    req.session.flashes['successMessage'] = 'You were successfully registered!';
+    req.session['username'] = req.body.username;
+    req.session['loggedIn'] = true;
+    return res.redirect('/');
+  });
 });
