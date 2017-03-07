@@ -109,8 +109,7 @@ router.post('/login', function (req,res) {
     if(err) throw error;
     console.log('formData', formData);
     console.log('DBuser', user);
-    console.log('DBuser pw', user[0].password);
-    if (user[0].password === formData.password) {
+    if (user && user.length === 1 && user[0].password === formData.password) {
       req.session['username'] = formData.username;
       req.session.flashes['successMessage'] = 'You were successfully logged in!';
       req.session['loggedIn'] = true;
