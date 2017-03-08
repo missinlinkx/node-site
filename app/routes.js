@@ -138,6 +138,7 @@ router.get('/register', function (req, res) {
 });
 router.post('/register', function (req, res) {
   var formData = {
+    email: req.body.email,
     username: req.body.username,
     password: req.body.password,
     pwdconf: req.body.pwdconf,
@@ -153,8 +154,7 @@ router.post('/register', function (req, res) {
         errorMessage = err.join(', ');
       }
       req.session.flashes['errorMessage'] = errorMessage;
-      req.session['username'] = req.body.username;
-      //SHOULD MOVE ABOVE TO FLASH, SAVE AS PREVIOUS REQ FORMDATA
+      req.session.flashes['prevReq'] = req.body;
 
       return res.redirect('/register')
     }

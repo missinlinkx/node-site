@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var sessionCookie = require('./session-cookie.js');
 var sessionFlashes = require('./session-flashes.js');
+var sessionLogin = require('./session-login.js');
 var sessionUser = require('./session-user.js');
 var app = express();
 var port = 8080;
@@ -21,9 +22,11 @@ app.use(function (req, res, next) {
 
 app.use(sessionCookie());
 
+app.use(sessionUser());
+
 app.use(sessionFlashes());
 
-app.use(sessionUser());
+app.use(sessionLogin());
 
 // use ejs and express layouts
 app.set('view engine', 'ejs');
