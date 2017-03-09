@@ -1,9 +1,13 @@
-// require express
+// require express and modules
 var express = require('express');
 var path = require('path');
+// verify if user is logged in and redirect if not
 var authGuardModule = require('../auth-guard.js');
+// mongoose user schema
 var User = require('./models/user/user-model.js');
+// module to create and save new user based on registration form data
 var addUser = require('./models/user/new-user.js');
+// algorithm modules
 var palindrome = require('../palindr-serv.js');
 var levenshtein = require('../lev-serv.js');
 var hanoi = require('../hanoi-serv.js');
@@ -11,6 +15,7 @@ var hanoi = require('../hanoi-serv.js');
 // create router object
 var router = express.Router();
 
+// redirect user to login page if not logged in
 var authGuard = authGuardModule({
   redirectUrl: '/login'
 });
@@ -20,6 +25,7 @@ module.exports = router;
 
 // route for homepage
 router.get('/', function (req, res) {
+  // set cookie
   res.cookie('your_name', 'value');
 
   var model = {
@@ -151,7 +157,7 @@ router.post('/register', function (req, res) {
     if (err) {
       var errorMessage = err;
       if (Array.isArray(err)) {
-        errorMessage = err.join(', ');
+        errorMessage = err.join('\n');
       }
       req.session.flashes['errorMessage'] = errorMessage;
       req.session.flashes['prevReq'] = req.body;
