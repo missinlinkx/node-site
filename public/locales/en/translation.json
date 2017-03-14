@@ -1,0 +1,11 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "lev": "Lev's distance",
+    "hanoi": "Hanoi towers",
+    "palindrome": "Palindrome solver",
+    "contact": "Contact"
+  },
+  "title-home": "Home is where the wifi connects automatically"
+}

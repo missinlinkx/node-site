@@ -1,12 +1,24 @@
 // require express and modules
 var express = require('express');
 var path = require('path');
+
 // verify if user is logged in and redirect if not
 var authGuardModule = require('../auth-guard.js');
+
+// require mongoose and establish DB connection
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/nodesite_users');
+
 // mongoose user schema
 var User = require('./models/user/user-model.js');
 // module to create and save new user based on registration form data
 var addUser = require('./models/user/new-user.js');
+
+// mongoose message Schema
+var Message = require('./models/guestbook/message-model.js');
+// module to create and save new message based on contact form data
+var addMessage = require('./models/guestbook/new-message.js');
+
 // algorithm modules
 var palindrome = require('../palindr-serv.js');
 var levenshtein = require('../lev-serv.js');
@@ -30,7 +42,8 @@ router.get('/', function (req, res) {
 
   var model = {
     lev: req.session.visitLev,
-    alert: req.flash.loginStatus
+    alert: req.flash.loginStatus,
+    pagetitle: 'title-home'
   };
   req.session.visitLev = false;
 
@@ -44,15 +57,41 @@ router.get('/about', function (req, res) {
 
 // route for contact page
 router.get('/contact', function (req, res) {
-  res.render('pages/contact');
+  if (req.session.username) {
+    User.find({username: req.session.username}, function(err, user){
+      res.locals.email = user[0].email;
+      return res.render('pages/contact');
+    });
+  }
+
+  return res.render('pages/contact');
+
 });
 
 router.post('/contact', function (req, res) {
-    res.render('pages/contact', {
-      fn: req.body.guestbookfirstname,
-      ln: req.body.guestbooklastname
-    });
+  var formData = {
+    firstname: req.body.guestbookfirstname,
+    lastname: req.body.guestbooklastname,
+    email: req.body.guestbookemail,
+    message: req.body.guestbookmsg,
+  }
 
+  addMessage(formData, function (err, savedMessage) {
+    if (err) {
+      var errorMessage = err;
+      if (Array.isArray(err)) {
+        errorMessage = err.join('\n');
+      }
+      req.session.flashes['errorMessage'] = errorMessage;
+      req.session.flashes['prevReq'] = req.body;
+      console.log('prev contact req',req.session.flashes.prevReq);
+
+      return res.redirect('/contact');
+    }
+
+    req.session.flashes['successMessage'] = 'Your message was posted successfully!';
+    return res.redirect('/contact');
+  });
 });
 
 // route for levs html page
@@ -132,7 +171,9 @@ router.post('/login', function (req,res) {
 // route for logout
 router.get('/logout', function (req, res) {
   delete req.session['username'];
+  delete req.session['email'];
   delete res.locals['username'];
+  delete res.locals['email'];
   req.session['loggedIn'] = false;
   res.locals['loggedIn'] = false;
   res.render('pages/logout');

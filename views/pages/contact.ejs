@@ -1,21 +1,72 @@
-<div class="jumbotron text-center">
+<div class="jumbotron clearfix">
   <h1>Contact page</h1>
-  <p>Enter your first and last name below to sign the cat's guestbook:</p>
-  <form class="form-inline" method="POST">
-    <div class="form-group">
-      <label class="sr-only" for="guestbookfirstname">First Name</label>
-      <input type="text" class="form-control" id="guestbookfirstname" name="guestbookfirstname" placeholder="First Name">
-    </div>
-    <div class="form-group">
-      <label class="sr-only" for="guestbooklastname">Last Name</label>
-      <input type="text" class="form-control" id="guestbooklastname" name="guestbooklastname" placeholder="Last Name">
-    </div>
-    <button type="submit" class="btn btn-info">Sign it!</button>
-  </form>
+  <p>Enter your details below to sign the cat's guestbook:</p>
 
-  <% if (locals.fn && locals.ln) { %>
-  <p id="signed"><%- "Thank you, " + locals.fn + " " + locals.ln %></p>
-  <% } else { %>
-    <p>Hey there!</p>
-  <% } %>
+
+  <div class="container col-sm-6">
+    <form class="form-horizontal" method="POST">
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="sr-only" for="guestbookfirstname">First Name</label>
+            <input type="text" class="form-control" id="guestbookfirstname" name="guestbookfirstname" placeholder="First Name" value= <%= locals.prevReq.guestbookfirstname %> >
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="sr-only" for="guestbooklastname">Last Name</label>
+            <input type="text" class="form-control" id="guestbooklastname" name="guestbooklastname" placeholder="Last Name" value= <%= locals.prevReq.guestbooklastname %> >
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <% if (locals.email) { %>
+              <label class="sr-only" for="guestbookemail">Email</label>
+              <input type="text" class="form-control" id="guestbookemail" name="guestbookemail" placeholder="Email" value= <%= locals.email %> >
+            <% } else { %>
+              <label class="sr-only" for="guestbookemail">Email</label>
+              <input type="text" class="form-control" id="guestbookemail" name="guestbookemail" placeholder="Email" value= <%= locals.prevReq.guestbookemail %> >
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <textarea class="form-control" rows="3" id="guestbookmsg" name="guestbookmsg" placeholder="Leave your message here" value= <%= locals.prevReq.guestbookmsg %> ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group col-sm-12">
+          <button type="submit" class="btn btn-info">Sign it!</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="row">
+      <% if (locals.username) { %>
+        <p><%- 'Hello, ' + locals.username + '!'%></p>
+      <% } else { %>
+        <p>Hello there, guest!</p>
+      <% } %>
+    </div>
+
+    <div class="row">
+      <% if (locals.flashes.messages) { %>
+        <% locals.flashes.messages.forEach(function(message,idx){ %>
+          <p><%= message.firstname + " " + message.lastname + "" %></p>
+        <% }); %>
+      <% } %>
+    </div>
+
+  </div>
+
 </div>

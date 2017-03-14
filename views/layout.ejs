@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%- defineContent('title') %></title>
+    <title data-i18n="<%= locals.pagetitle %>" ><%- defineContent('title') %></title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css">
@@ -13,12 +13,12 @@
         <div class="container">
           <a href="/" class="navbar-brand">someone's site</a>
           <ul class="nav navbar-nav">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/levs-html-page">Levenshtein distance calculator</a></li>
-            <li><a href="/hanois-html-page">Towers of Hanoi</a></li>
-            <li><a href="/pals-html-page">Palindrome solver</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/" data-i18n="nav.home">Home</a></li>
+            <li><a href="/about" data-i18n="nav.about">About</a></li>
+            <li><a href="/levs-html-page" data-i18n="nav.lev">Levenshtein distance calculator</a></li>
+            <li><a href="/hanois-html-page" data-i18n="nav.hanoi">Towers of Hanoi</a></li>
+            <li><a href="/pals-html-page" data-i18n="nav.palindrome">Palindrome solver</a></li>
+            <li><a href="/contact" data-i18n="nav.contact">Contact</a></li>
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
@@ -34,6 +34,8 @@
               <li role="separator" class="divider"></li>
               <li><a href="/register">Register</a></li>
             <% } %>
+              <li><a class="lng-switch" id="lng-en" data-language="en">EN</a></li>
+              <li><a class="lng-switch" id="lng-cat" data-language="cat">CAT</a></li>
           </ul>
         </div>
       </nav>
@@ -77,5 +79,36 @@
       crossorigin="anonymous"></script>
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="/lib/js/i18next.min.js"></script>
+    <script src="/lib/js/jquery-i18next.min.js"></script>
+    <script src="/lib/js/i18nextXHRBackend.min.js"></script>
+    <script>
+    i18next
+      .use(i18nextXHRBackend)
+      .init({
+        debug: true,
+        fallbackLng: null,
+        lng: 'cat', // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
+      }, function(err, t) {
+        // for options see
+        // https://github.com/i18next/jquery-i18next#initialize-the-plugin
+        jqueryI18next.init(i18next, $);
+        // start localizing, details:
+        // https://github.com/i18next/jquery-i18next#usage-of-selector-function
+        $(document).localize();
+      });
+
+      $(function () {
+        $('.lng-switch').on('click', function () {
+          var $this = $(this);
+          i18next.changeLanguage($this.data('language'), function (err, t) {
+            $(document).localize();
+          });
+        })
+      });
+
+    </script>
+
+
   </body>
 </html>

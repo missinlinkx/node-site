@@ -5,6 +5,7 @@ var User = require('./user-model.js');
 function addUser (formData, callback) {
   var errors = [];
 
+  // check user input
   if (typeof formData.username !== 'string') {
     errors.push('Username entered is not a string of characters');
   } else if (!/^[a-zA-Z][a-zA-Z0-9]{2,}$/.test(formData.username)) {
@@ -22,7 +23,7 @@ function addUser (formData, callback) {
   if (errors.length > 0) {
     return callback(errors);
   }
-
+  // check database for duplicate usernames or emails
   return User.find({$or: [{email: formData.email}, {username: formData.username}]}, function (err, users) {
     if (err) return callback(err);
     if (users && users.length) {
@@ -41,7 +42,7 @@ function addUser (formData, callback) {
       return callback(errors);
     }
 
-    // if no coflicts are found, proceed to store form data as per user model
+    // if no conflicts are found, proceed to store form data as per user model
     var newUser = User({
       email: formData.email,
       username: formData.username,

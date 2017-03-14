@@ -46,3 +46,7 @@ main {
   min-height: 500px;
   padding: 50px 0;
 }
+
+#ln {
+  position: absolute; right: 2;
+}
