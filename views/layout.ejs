@@ -82,13 +82,30 @@
     <script src="/lib/js/i18next.min.js"></script>
     <script src="/lib/js/jquery-i18next.min.js"></script>
     <script src="/lib/js/i18nextXHRBackend.min.js"></script>
+    <script src="/lib/js/i18nextBrowserLanguageDetector.min.js"></script>
     <script>
     i18next
       .use(i18nextXHRBackend)
+      .use(i18nextBrowserLanguageDetector)
       .init({
         debug: true,
         fallbackLng: null,
-        lng: 'cat', // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
+        // lng: 'cat', // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector,
+        // detection: {
+        //   // order and from where user language should be detected
+        //   order: ['querystring', 'cookie'],
+        //
+        //   // keys or params to lookup language from
+        //   lookupQuerystring: 'lng',
+        //   lookupCookie: 'i18next',
+        //   lookupLocalStorage: 'i18nextLng',
+        //
+        //   // cache user language on
+        //   caches: ['localStorage', 'cookie']
+        //
+        //   // optional htmlTag with lang attribute, the default is:
+        //   htmlTag: document.documentElement
+        // }
       }, function(err, t) {
         // for options see
         // https://github.com/i18next/jquery-i18next#initialize-the-plugin

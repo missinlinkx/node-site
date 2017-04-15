@@ -22,16 +22,27 @@ function addMessage (formData, callback) {
     lastname: formData.lastname,
     email: formData.email,
     message: formData.message,
-  }); //29
+  });
 
   // save new message to database
-  newMessage.save(function(err, savedMessage) {
-    if (err) return callback(err);
+
+  newMessage.save().then(function (savedMessage) {
 
     console.log('message has been saved as',savedMessage);
-
     return callback(null, savedMessage);
-  });//37
+
+  }).catch(function (err) {
+    console.log('message could not be saved', err);
+    return callback(err);
+  });
+  //
+  // newMessage.save(function(err, savedMessage) {
+  //   if (err) return callback(err);
+  //
+  //   console.log('message has been saved as',savedMessage);
+  //
+  //   return callback(null, savedMessage);
+  // });
 }
 
 module.exports = addMessage;

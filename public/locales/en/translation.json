@@ -7,5 +7,7 @@
     "palindrome": "Palindrome solver",
     "contact": "Contact"
   },
-  "title-home": "Home is where the wifi connects automatically"
+  "title-home": "Home is where the wifi connects automatically",
+  "move": "move",
+  "move_plural": "moves"
 }
