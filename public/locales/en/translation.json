@@ -1,13 +1,11 @@
 {
-  "nav": {
-    "home": "Home",
-    "about": "About",
-    "lev": "Lev's distance",
-    "hanoi": "Hanoi towers",
-    "palindrome": "Palindrome solver",
-    "contact": "Contact"
-  },
-  "title-home": "Home is where the wifi connects automatically",
-  "move": "move",
-  "move_plural": "moves"
+  "nav##home": "Home",
+  "nav##about": "About",
+  "nav##lev": "Lev's distance",
+  "nav##hanoi": "Hanoi towers",
+  "nav##palindrome": "Palindrome solver",
+  "nav##contact": "Contact",
+  "home##title-home": "Home is where the wifi connects automatically",
+  "hanoi##move": "move",
+  "hanoi##move_plural": "moves"
 }

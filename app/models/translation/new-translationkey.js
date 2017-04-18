@@ -28,7 +28,7 @@ function addTranslation (formData, callback) {
 
         if (translationKey.translation === formData.translation) {
           console.log('found this translation',translation,'in this language',formData.language,'already');
-          errors.push('Tranlation string already exists in this language.');
+          errors.push('Translation string already exists in this language.');
         }
       });
 

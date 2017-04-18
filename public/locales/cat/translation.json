@@ -1,13 +1,13 @@
 {
   "nav": {
-    "home": "Purr",
-    "about": "Frr",
-    "lev": "Frr!",
-    "hanoi": "Hrr",
-    "palindrome": "Whirr",
-    "contact": "Meww"
+    "nav##home": "Purr",
+    "nav##about": "Frr",
+    "nav##lev": "Frr!",
+    "nav##hanoi": "Hrr",
+    "nav##palindrome": "Whirr",
+    "nav##contact": "Meww"
   },
-  "title-home": "Mrow mew miu mwuh meow mrrrow meow-wow-purr",
-  "move": "mrow",
-  "move_plural": "mrows"
+  "home##title": "Mrow mew miu mwuh meow mrrrow meow-wow-purr",
+  "hanoi##move": "mrow",
+  "hanoi##move_plural": "mrows"
 }

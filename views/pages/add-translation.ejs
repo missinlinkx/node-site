@@ -1,0 +1,52 @@
+<div class="jumbotron clearfix">
+  <h1>Translation keys</h1>
+  <p>Fill in the form below to add a new translation key:</p>
+
+
+  <div class="container col-sm-6">
+    <form class="form-horizontal" method="POST">
+
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="sr-only" for="app">App</label>
+            <input type="text" class="form-control" id="app" name="app" placeholder="App" value= <%= locals.prevReq.app %> >
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="sr-only" for="language">Language</label>
+            <input type="text" class="form-control" id="language" name="language" placeholder="Language" value= <%= locals.prevReq.language %> > <!--SHOULD TAKE LANGUAGE FROM SELECTED TAB-->
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+              <label class="sr-only" for="key">Key</label>
+              <input type="text" class="form-control" id="key" name="key" placeholder="Key" value= <%= locals.prevReq.key %> >
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+              <label class="sr-only" for="translation">Translation</label>
+              <input type="text" class="form-control" id="translation" name="translation" placeholder="Translation" value= <%= locals.prevReq.translation %> >
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="form-group col-sm-12">
+          <button type="submit" class="btn btn-info">Add</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+</div>
