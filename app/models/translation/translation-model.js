@@ -9,7 +9,7 @@ var translationSchema = new Schema({
   app: String,
   language: String,
   key: String,
-  translation: String
+  translationString: String
 });
 
 var translationKey = mongoose.model('translationKey', translationSchema);

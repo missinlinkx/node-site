@@ -19,6 +19,11 @@ var Message = require('./models/guestbook/message-model.js');
 // module to create and save new message based on contact form data
 var addMessage = require('./models/guestbook/new-message.js');
 
+// mongoose translation key Schema
+var TranslationKey = require('./models/translation/translation-model.js');
+// module to create and save new translationKeys based on form data
+var addTranslation = require('./models/translation/new-translationkey.js');
+
 // algorithm modules
 var palindrome = require('../palindr-serv.js');
 var levenshtein = require('../lev-serv.js');
@@ -210,5 +215,55 @@ router.post('/register', function (req, res) {
     req.session['username'] = req.body.username;
     req.session['loggedIn'] = true;
     return res.redirect('/');
+  });
+});
+
+// route for add-translation page
+router.get('/add-translation', function (req, res) {
+  // if (req.session.username) {
+  //   User.find({username: req.session.username}, function(err, user){
+  //     res.locals.email = user[0].email;
+  //     return res.render('pages/contact');
+  //   });
+  // }
+  var allKeys = [];
+
+  TranslationKey.find({}, function (err, translationKeys) {
+    if (err) console.log(err);
+
+    translationKeys.forEach(function (translationKey) {
+      allKeys.push(translationKey);
+    });
+
+    return res.render('pages/add-translation', {
+      allKeys: allKeys
+    });
+  });
+
+});
+
+router.post('/add-translation', function (req, res) {
+  var formData = {
+    app: req.body.app,
+    language: req.body.language,
+    key: req.body.key,
+    translationString: req.body.translationString,
+  }
+
+  addTranslation(formData, function (err, savedTranslationKey) {
+    if (err) {
+      var errorMessage = err;
+      if (Array.isArray(err)) {
+        errorMessage = err.join('\n');
+      }
+      req.session.flashes['errorMessage'] = errorMessage;
+      req.session.flashes['prevReq'] = req.body;
+      console.log('prev key req',req.session.flashes.prevReq);
+
+      return res.redirect('/add-translation');
+    }
+
+    req.session.flashes['successMessage'] = 'Your translation key was added successfully!';
+    return res.redirect('/add-translation');
   });
 });

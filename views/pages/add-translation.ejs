@@ -1,5 +1,5 @@
 <div class="jumbotron clearfix">
-  <h1>Translation keys</h1>
+  <h2>Translation keys</h2>
   <p>Fill in the form below to add a new translation key:</p>
 
 
@@ -10,7 +10,9 @@
         <div class="col-sm-6">
           <div class="form-group">
             <label class="sr-only" for="app">App</label>
-            <input type="text" class="form-control" id="app" name="app" placeholder="App" value= <%= locals.prevReq.app %> >
+            <input type="text" class="form-control" id="app" name="app" placeholder="App" <% if (locals.prevReq) { %>
+                                                                                            value= <%= locals.prevReq.app %>
+                                                                                          <% } %> >
           </div>
         </div>
 
@@ -34,8 +36,8 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="form-group">
-              <label class="sr-only" for="translation">Translation</label>
-              <input type="text" class="form-control" id="translation" name="translation" placeholder="Translation" value= <%= locals.prevReq.translation %> >
+              <label class="sr-only" for="translationString">Translation string</label>
+              <input type="text" class="form-control" id="translationString" name="translationString" placeholder="Translation string" value= <%= locals.prevReq.translationString %> >
           </div>
         </div>
       </div>
@@ -50,3 +52,23 @@
   </div>
 
 </div>
+<table>
+  <thead>
+    <tr>
+      <th>Language</th>
+      <th>App</th>
+      <th>Key</th>
+      <th>Translation String</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% locals.allKeys.forEach(function(translation){ %>
+      <tr>
+        <td><%=translation.language%></td>
+        <td><%=translation.app%></td>
+        <td><%=translation.key%></td>
+        <td><%=translation.translationString%></td>
+      </tr>
+    <% }); %>
+  </tbody>
+</table>

@@ -7,7 +7,7 @@ function addTranslation (formData, callback) {
 
   // check user input
   // ADD VERIFICATION FOR APP INPUT?!
-  if (!/[A-Z]{2}/.test(formData.language)) {
+  if (!/^[A-Z]{2}$/.test(formData.language)) {
     errors.push('Please enter a 2-letter language code in uppercase. (XX)');
   }
   if (!/^[a-zA-Z][a-zA-Z]*(-[a-zA-Z]+)*#{2}.+$/.test(formData.key)) {
@@ -16,42 +16,44 @@ function addTranslation (formData, callback) {
   if (errors.length > 0) {
     return callback(errors);
   }
-  // check database for duplicate keys or translation strings
-  return TranslationKey.find({$or: [{key: formData.key}, {translation: formData.translation}]}, function (err, translationKeys) {
+  // check database for duplicate keys or translation strings (in the same language and for the same app)
+  return TranslationKey.find({$or: [{key: formData.key}, {string: formData.string}]}, function (err, translationKeys) {
     if (err) return callback(err);
     if (translationKeys && translationKeys.length) {
       translationKeys.forEach(function (translationKey) {
-        if (translationKey.key === formData.key) {
-          console.log('found this key',key,'in this language',formData.language,'already');
-          errors.push('Key already exists in this language.');
-        }
-
-        if (translationKey.translation === formData.translation) {
-          console.log('found this translation',translation,'in this language',formData.language,'already');
-          errors.push('Translation string already exists in this language.');
+        if (translationKey.language === formData.language && translationKey.app === formData.app) {
+          if (translationKey.key === formData.key) {
+            console.log('found this key',translationKey.key,'in this language',formData.language,'already');
+            errors.push('Key already exists in this language for this app.');
+          }
+          if (translationKey.translationString === formData.translationString) {
+            console.log('found this translation',translationKey.translationString,'in this language',formData.language,'already');
+            errors.push('Translation string already exists in this language for this app.');
+          }
         }
       });
+      if (errors.length) {
+        return callback(errors);
+      } else {
+        // if no conflicts are found, proceed to store form data as per translation key model
+        var newTranslationKey = TranslationKey({
+          app: formData.app,
+          language: formData.language,
+          key: formData.key,
+          translationString: formData.translationString
+        });
 
-      return callback(errors);
+        // save new user to database
+        newTranslationKey.save(function(err, savedTranslationKey) {
+          if (err) return callback(err);
+
+          console.log('TranslationKey created!');
+          console.log('TranslationKey has been saved as',savedTranslationKey);
+
+          return callback(null, savedTranslationKey);
+        });
+      }
     }
-
-    // if no conflicts are found, proceed to store form data as per user model
-    var newTranslationKey = TranslationKey({
-      app: formData.app,
-      language: formData.language,
-      key: formData.key,
-      translation: formData.translation
-    });
-
-    // save new user to database
-    newTranslationKey.save(function(err, savedTranslationKey) {
-      if (err) return callback(err);
-
-      console.log('TranslationKey created!');
-      console.log('TranslationKey has been saved as',savedTranslationKey);
-
-      return callback(null, savedTranslationKey);
-    });
   });
 }
 

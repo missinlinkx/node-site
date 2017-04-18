@@ -1,12 +1,10 @@
 {
-  "nav": {
-    "nav##home": "Purr",
-    "nav##about": "Frr",
-    "nav##lev": "Frr!",
-    "nav##hanoi": "Hrr",
-    "nav##palindrome": "Whirr",
-    "nav##contact": "Meww"
-  },
+  "nav##home": "Purr",
+  "nav##about": "Frr",
+  "nav##lev": "Frr!",
+  "nav##hanoi": "Hrr",
+  "nav##palindrome": "Whirr",
+  "nav##contact": "Meww",
   "home##title": "Mrow mew miu mwuh meow mrrrow meow-wow-purr",
   "hanoi##move": "mrow",
   "hanoi##move_plural": "mrows"
