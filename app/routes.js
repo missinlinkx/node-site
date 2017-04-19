@@ -23,6 +23,8 @@ var addMessage = require('./models/guestbook/new-message.js');
 var TranslationKey = require('./models/translation/translation-model.js');
 // module to create and save new translationKeys based on form data
 var addTranslation = require('./models/translation/new-translationkey.js');
+// module to modify and save existing translationKeys based on form data
+var editTranslation = require('./models/translation/edit-translationkey.js');
 
 // algorithm modules
 var palindrome = require('../palindr-serv.js');
@@ -248,22 +250,42 @@ router.post('/add-translation', function (req, res) {
     language: req.body.language,
     key: req.body.key,
     translationString: req.body.translationString,
+    functionality: req.body.functionality
   }
 
-  addTranslation(formData, function (err, savedTranslationKey) {
-    if (err) {
-      var errorMessage = err;
-      if (Array.isArray(err)) {
-        errorMessage = err.join('\n');
+  if (formData.functionality === 'add') {
+    addTranslation(formData, function (err, savedTranslationKey) {
+      if (err) {
+        var errorMessage = err;
+        if (Array.isArray(err)) {
+          errorMessage = err.join('\n');
+        }
+        req.session.flashes['errorMessage'] = errorMessage;
+        req.session.flashes['prevReq'] = req.body;
+        console.log('prev key req',req.session.flashes.prevReq);
+
+        return res.redirect('/add-translation');
       }
-      req.session.flashes['errorMessage'] = errorMessage;
-      req.session.flashes['prevReq'] = req.body;
-      console.log('prev key req',req.session.flashes.prevReq);
 
+      req.session.flashes['successMessage'] = 'Your translation key was added successfully!';
       return res.redirect('/add-translation');
-    }
+    });
+  } else if (formData.functionality === 'edit') {
+    editTranslation(formData, function (err, savedTranslationKey) {
+      if (err) {
+        var errorMessage = err;
+        if (Array.isArray(err)) {
+          errorMessage = err.join('\n');
+        }
+        req.session.flashes['errorMessage'] = errorMessage;
+        req.session.flashes['prevReq'] = req.body;
+        console.log('prev key req',req.session.flashes.prevReq);
 
-    req.session.flashes['successMessage'] = 'Your translation key was added successfully!';
-    return res.redirect('/add-translation');
-  });
+        return res.redirect('/add-translation');
+      }
+      req.session.flashes['successMessage'] = 'The translation key was modified successfully!';
+      return res.redirect('/add-translation');
+    });
+  }
+
 });

@@ -19,7 +19,9 @@
         <div class="col-sm-6">
           <div class="form-group">
             <label class="sr-only" for="language">Language</label>
-            <input type="text" class="form-control" id="language" name="language" placeholder="Language" value= <%= locals.prevReq.language %> > <!--SHOULD TAKE LANGUAGE FROM SELECTED TAB-->
+            <input type="text" class="form-control" id="language" name="language" placeholder="Language" <% if (locals.prevReq) { %>
+                                                                                                          value= <%= locals.prevReq.language %>
+                                                                                                        <% } %> > <!--SHOULD TAKE LANGUAGE FROM SELECTED TAB-->
           </div>
         </div>
       </div>
@@ -28,7 +30,9 @@
         <div class="col-sm-12">
           <div class="form-group">
               <label class="sr-only" for="key">Key</label>
-              <input type="text" class="form-control" id="key" name="key" placeholder="Key" value= <%= locals.prevReq.key %> >
+              <input type="text" class="form-control" id="key" name="key" placeholder="Key" <% if (locals.prevReq) { %>
+                                                                                              value= <%= locals.prevReq.key %>
+                                                                                            <% } %> >
           </div>
         </div>
       </div>
@@ -37,38 +41,95 @@
         <div class="col-sm-12">
           <div class="form-group">
               <label class="sr-only" for="translationString">Translation string</label>
-              <input type="text" class="form-control" id="translationString" name="translationString" placeholder="Translation string" value= <%= locals.prevReq.translationString %> >
+              <input type="text" class="form-control" id="translationString" name="translationString" placeholder="Translation string" <% if (locals.prevReq) { %>
+                                                                                                                                        value= <%= locals.prevReq.translationString %>
+                                                                                                                                      <% } %> >
           </div>
         </div>
       </div>
 
+      <input type="hidden" id="functionality" name="functionality" value="add">
+
       <div class="row">
         <div class="form-group col-sm-12">
-          <button type="submit" class="btn btn-info">Add</button>
+          <button type="submit" class="btn btn-info">
+            <i id="submit-btn-icon" class="fa fa-plus"></i>
+            <span id="submit-btn-text">Add</span>
+          </button>
+          <button type="button" class="btn btn-danger" id="btn-reset">
+            <i class="fa fa-times"></i>
+            Reset
+          </button>
         </div>
       </div>
     </form>
-
   </div>
 
 </div>
-<table>
-  <thead>
-    <tr>
-      <th>Language</th>
-      <th>App</th>
-      <th>Key</th>
-      <th>Translation String</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% locals.allKeys.forEach(function(translation){ %>
+
+<div class="jumbotron clearfix">
+  <table class="table table-hover">
+    <thead>
       <tr>
-        <td><%=translation.language%></td>
-        <td><%=translation.app%></td>
-        <td><%=translation.key%></td>
-        <td><%=translation.translationString%></td>
+        <th>Language</th>
+        <th>App</th>
+        <th>Key</th>
+        <th>Translation String</th>
+        <th>Modify</th>
       </tr>
-    <% }); %>
-  </tbody>
-</table>
+    </thead>
+    <tbody id="tBody">
+      <% locals.allKeys.forEach(function(translation,idx){ %>
+        <tr id="translation-row-<%=idx%>" >
+          <td class="language"><%=translation.language%></td>
+          <td class="app"><%=translation.app%></td>
+          <td class="key"><%=translation.key%></td>
+          <td class="translationString"><%=translation.translationString%></td>
+          <td class="translation-table-select">
+            <button type="button" class="btn btn-info" style="width:100%;" data-idx="<%=idx%>" onclick="select(this)">
+              <i class="fa fa-pencil-square-o fa-lg"></i>
+            </button>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+
+<%- contentFor('pageJS') %>
+<script type="text/javascript">
+  function select (btn) {
+    var idx = $(btn).data("idx").toString();
+    var targetRow = "table #tBody #translation-row-"+idx;
+
+    var $appName = $(targetRow+" .app").text();
+    var $lang = $(targetRow+" .language").text();
+    var $key = $(targetRow+" .key").text();
+    var $translationString = $(targetRow+" .translationString").text();
+
+    $("#app").val($appName).attr('readonly', 'readonly');
+    $("#language").val($lang).attr('readonly', 'readonly');
+    $("#key").val($key).attr('readonly', 'readonly');
+    $("#translationString").val($translationString);
+
+    $("#functionality").val("edit");
+    $("#submit-btn-text").text("Save");
+    $("#submit-btn-icon").removeClass("fa-plus").addClass("fa-floppy-o");
+  }
+
+  function reset () {
+    $("#app").val("").attr('readonly', null);
+    $("#language").val("").attr('readonly', null);
+    $("#key").val("").attr('readonly', null);
+    $("#translationString").val("");
+
+    $("#functionality").val("add");
+    $("#submit-btn-text").text("Add");
+    $("#submit-btn-icon").removeClass("fa-floppy-o").addClass("fa-plus");
+
+  }
+
+  $("#btn-reset").on('click', reset);
+
+
+</script>

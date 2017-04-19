@@ -1,4 +1,4 @@
-// create a new user on the registration page
+// create a new translation key in the registration page
 
 var TranslationKey = require('./translation-model.js');
 
