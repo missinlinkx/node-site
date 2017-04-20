@@ -52,13 +52,17 @@
 
       <div class="row">
         <div class="form-group col-sm-12">
-          <button type="submit" class="btn btn-info">
+          <button type="submit" class="btn btn-success">
             <i id="submit-btn-icon" class="fa fa-plus"></i>
             <span id="submit-btn-text">Add</span>
           </button>
           <button type="button" class="btn btn-danger" id="btn-reset">
             <i class="fa fa-times"></i>
             Reset
+          </button>
+          <button type="button" class="btn btn-info" id="btn-export">
+            <i class="fa fa-cloud-download"></i>
+            Export
           </button>
         </div>
       </div>
@@ -131,5 +135,51 @@
 
   $("#btn-reset").on('click', reset);
 
+  function objectify() {
+    var translations = {};
+    $("#tBody tr").each(function (idx,elem) {
+      var $elem = $(elem);
+      var $elemid = "#"+$elem.attr("id").toString();
+      var key = $($elemid+" .key").text(); //why in the Norse Gods' name does this not work if I call it $key? :P
+      var $translationString = $($elemid+" .translationString").text();
+      translations[key] = $translationString;
+    });
+    return translations;
+  }
+
+  $("#btn-export").on('click', fExport);
+
+  function makeTextFile(text) {
+    var textFile = null;
+    var data = new Blob([text], {type: 'text/plain'});
+
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+
+    textFile = window.URL.createObjectURL(data);
+
+    // returns a URL you can use as a href
+    return textFile;
+  };
+
+  function fExport() {
+    var transJSON = objectify();
+
+    var link = document.createElement('a');
+    link.setAttribute('download', 'translation.json');
+    link.href = makeTextFile(JSON.stringify(transJSON, null, 2));
+    document.body.appendChild(link);
+
+    // wait for the link to be added to the document
+    window.requestAnimationFrame(function () {
+      var event = new MouseEvent('click');
+      link.dispatchEvent(event);
+      document.body.removeChild(link);
+    });
+
+  }
 
 </script>

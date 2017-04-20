@@ -17,7 +17,7 @@ function addTranslation (formData, callback) {
     return callback(errors);
   }
   // check database for duplicate keys or translation strings (in the same language and for the same app)
-  return TranslationKey.find({$or: [{key: formData.key}, {string: formData.string}]}, function (err, translationKeys) {
+  return TranslationKey.find({$or: [{key: formData.key}, {string: formData.translationString}]}, function (err, translationKeys) {
     if (err) return callback(err);
     if (translationKeys && translationKeys.length) {
       translationKeys.forEach(function (translationKey) {

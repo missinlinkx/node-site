@@ -17,7 +17,7 @@ function editTranslation (formData, callback) {
     return callback(errors);
   }
 
-  // check database for duplicate keys or translation strings (in the same language and for the same app)
+  // check database for previous translation string associated with this key (in the same language and for the same app)
   return TranslationKey.find({$and: [{language: formData.language}, {app: formData.app}, {key: formData.key}, {translationString: formData.translationString}]}, function (err, translationKeys) {
     if (err) return callback(err);
     if (translationKeys && translationKeys.length) {
