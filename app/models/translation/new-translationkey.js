@@ -45,7 +45,6 @@ function addTranslation (formData, callback) {
         translationString: formData.translationString
       });
 
-
       // save new user to database
       newTranslationKey.save(function(err, savedTranslationKey) {
         if (err) return callback(err);

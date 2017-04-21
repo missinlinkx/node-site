@@ -150,10 +150,12 @@
     var translations = {};
     $("#tBody tr").each(function (idx,elem) {
       var $elem = $(elem);
-      var $elemid = "#"+$elem.attr("id").toString();
-      var key = $($elemid+" .key").text();
-      var $translationString = $($elemid+" .translationString").text();
-      translations[key] = $translationString; //why in the Norse Gods' name does this not work if I call it $key? :P
+      if ($elem.hasClass("search-result-true") || $elem.attr("class") === "" || !$elem.attr("class")) {
+        var $elemid = "#"+$elem.attr("id").toString();
+        var key = $($elemid+" .key").text();
+        var $translationString = $($elemid+" .translationString").text();
+        translations[key] = $translationString; //why in the Norse Gods' name does this not work if I call it $key? :P
+      }
     });
     return translations;
   }
