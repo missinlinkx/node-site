@@ -32,28 +32,31 @@ function addTranslation (formData, callback) {
           }
         }
       });
-      if (errors.length) {
-        return callback(errors);
-      } else {
-        // if no conflicts are found, proceed to store form data as per translation key model
-        var newTranslationKey = TranslationKey({
-          app: formData.app,
-          language: formData.language,
-          key: formData.key,
-          translationString: formData.translationString
-        });
-
-        // save new user to database
-        newTranslationKey.save(function(err, savedTranslationKey) {
-          if (err) return callback(err);
-
-          console.log('TranslationKey created!');
-          console.log('TranslationKey has been saved as',savedTranslationKey);
-
-          return callback(null, savedTranslationKey);
-        });
-      }
     }
+
+    if (errors.length) {
+      return callback(errors);
+    } else {
+      // if no conflicts are found, proceed to store form data as per translation key model
+      var newTranslationKey = TranslationKey({
+        app: formData.app,
+        language: formData.language,
+        key: formData.key,
+        translationString: formData.translationString
+      });
+
+
+      // save new user to database
+      newTranslationKey.save(function(err, savedTranslationKey) {
+        if (err) return callback(err);
+
+        console.log('TranslationKey created!');
+        console.log('TranslationKey has been saved as',savedTranslationKey);
+
+        return callback(null, savedTranslationKey);
+      });
+    }
+
   });
 }
 

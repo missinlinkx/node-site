@@ -10,7 +10,7 @@
         <div class="col-sm-6">
           <div class="form-group">
             <label class="sr-only" for="app">App</label>
-            <input type="text" class="form-control" id="app" name="app" placeholder="App" <% if (locals.prevReq) { %>
+            <input type="text" class="form-control" id="app" name="app" placeholder="App" onkeyup="search()" <% if (locals.prevReq) { %>
                                                                                             value= <%= locals.prevReq.app %>
                                                                                           <% } %> >
           </div>
@@ -19,7 +19,7 @@
         <div class="col-sm-6">
           <div class="form-group">
             <label class="sr-only" for="language">Language</label>
-            <input type="text" class="form-control" id="language" name="language" placeholder="Language" <% if (locals.prevReq) { %>
+            <input type="text" class="form-control" id="language" name="language" placeholder="Language" onkeyup="search()" <% if (locals.prevReq) { %>
                                                                                                           value= <%= locals.prevReq.language %>
                                                                                                         <% } %> > <!--SHOULD TAKE LANGUAGE FROM SELECTED TAB-->
           </div>
@@ -30,7 +30,7 @@
         <div class="col-sm-12">
           <div class="form-group">
               <label class="sr-only" for="key">Key</label>
-              <input type="text" class="form-control" id="key" name="key" placeholder="Key" <% if (locals.prevReq) { %>
+              <input type="text" class="form-control" id="key" name="key" placeholder="Key" onkeyup="search()" <% if (locals.prevReq) { %>
                                                                                               value= <%= locals.prevReq.key %>
                                                                                             <% } %> >
           </div>
@@ -41,14 +41,22 @@
         <div class="col-sm-12">
           <div class="form-group">
               <label class="sr-only" for="translationString">Translation string</label>
-              <input type="text" class="form-control" id="translationString" name="translationString" placeholder="Translation string" <% if (locals.prevReq) { %>
+              <input type="text" class="form-control" id="translationString" name="translationString" placeholder="Translation string" onkeyup="search()" <% if (locals.prevReq) { %>
                                                                                                                                         value= <%= locals.prevReq.translationString %>
                                                                                                                                       <% } %> >
           </div>
         </div>
       </div>
 
-      <input type="hidden" id="functionality" name="functionality" value="add">
+      <div class="row">
+        <div class="form-group col-sm-12">
+          <div class="checkbox">
+            <label>
+              <input id="case-sensitive" type="checkbox" onclick="search()"> Enable case-sensitive search
+            </label>
+          </div>
+        </div>
+      </div>
 
       <div class="row">
         <div class="form-group col-sm-12">
@@ -66,6 +74,9 @@
           </button>
         </div>
       </div>
+
+      <input type="hidden" id="functionality" name="functionality" value="add">
+
     </form>
   </div>
 
@@ -84,7 +95,7 @@
     </thead>
     <tbody id="tBody">
       <% locals.allKeys.forEach(function(translation,idx){ %>
-        <tr id="translation-row-<%=idx%>" >
+        <tr id="translation-row-<%=idx%>"  data-language="<%=translation.language%>" data-app="<%=translation.app%>" data-key="<%=translation.key%>" data-string="<%=translation.translationString%>">
           <td class="language"><%=translation.language%></td>
           <td class="app"><%=translation.app%></td>
           <td class="key"><%=translation.key%></td>
@@ -140,9 +151,9 @@
     $("#tBody tr").each(function (idx,elem) {
       var $elem = $(elem);
       var $elemid = "#"+$elem.attr("id").toString();
-      var key = $($elemid+" .key").text(); //why in the Norse Gods' name does this not work if I call it $key? :P
+      var key = $($elemid+" .key").text();
       var $translationString = $($elemid+" .translationString").text();
-      translations[key] = $translationString;
+      translations[key] = $translationString; //why in the Norse Gods' name does this not work if I call it $key? :P
     });
     return translations;
   }
@@ -178,6 +189,53 @@
       var event = new MouseEvent('click');
       link.dispatchEvent(event);
       document.body.removeChild(link);
+    });
+  }
+
+  function search() {
+
+    var langInput = $('#language').val(),
+      appInput = $('#app').val(),
+      keyInput = $('#key').val(),
+      stringInput= $('#translationString').val();
+
+
+    $("tr.search-result-true").removeClass("search-result-true");
+    $("tr.search-result-false").removeClass("search-result-false");
+
+    if (!langInput && !appInput && !keyInput && !stringInput) {
+      return;
+    }
+
+    $("#tBody tr").each(function(idx,elem) {
+      var $elem = $(elem);
+
+      if (!$('#case-sensitive').prop('checked')) {
+        if (((!langInput) || ($elem.data("language").toUpperCase().startsWith(langInput.toUpperCase()))) &&
+        ((!appInput) || ($elem.data("app").toUpperCase().indexOf(appInput.toUpperCase())!==-1)) &&
+        ((!keyInput) || ($elem.data("key").toUpperCase().indexOf(keyInput.toUpperCase())!==-1)) &&
+        ((!stringInput) || ($elem.data("string").toUpperCase().indexOf(stringInput.toUpperCase())!==-1)))
+        {
+          $elem.addClass("search-result-true");
+
+        } else {
+          $elem.addClass("search-result-false");
+        }
+
+      } else {
+        if (((langInput) && ($elem.data("language").startsWith(langInput))) ||
+          ((appInput) && ($elem.data("app").indexOf(appInput)!==-1)) ||
+          ((keyInput) && ($elem.data("key").indexOf(keyInput)!==-1)) ||
+          ((stringInput) && ($elem.data("string").indexOf(stringInput)!==-1)))
+        {
+          $elem.addClass("search-result-true");
+
+        } else {
+          $elem.addClass("search-result-false");
+        }
+      }
+
+
     });
 
   }

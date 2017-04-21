@@ -46,3 +46,11 @@ main {
   min-height: 500px;
   padding: 50px 0;
 }
+
+.search-result-true {
+  display: table-row !important;
+}
+
+.search-result-false {
+  display: none !important;
+}
