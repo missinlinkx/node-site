@@ -2,6 +2,9 @@
 var express = require('express');
 var path = require('path');
 
+// require underscore
+var _ = require('underscore');
+
 // verify if user is logged in and redirect if not
 var authGuardModule = require('../auth-guard.js');
 
@@ -222,26 +225,29 @@ router.post('/register', function (req, res) {
 
 // route for add-translation page
 router.get('/add-translation', function (req, res) {
-  // if (req.session.username) {
-  //   User.find({username: req.session.username}, function(err, user){
-  //     res.locals.email = user[0].email;
-  //     return res.render('pages/contact');
-  //   });
-  // }
-  var allKeys = [];
+  var groupsByKey = [],
+    languages = ['CT','EN'],
+    apps = ['some-app','someotherapp','default'],
+    defaultApp = apps[0],
+    defaultLang = languages[0];
 
-  TranslationKey.find({}, function (err, translationKeys) {
-    if (err) console.log(err);
+  if (!req.query.app || apps.indexOf(req.query.app)===-1 || !req.query.lang || languages.indexOf(req.query.lang)===-1) {
+    return res.redirect('/add-translation?app='+defaultApp+'&lang='+defaultLang);
+  } else {
+    TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
+      if (err) console.log(err);
 
-    translationKeys.forEach(function (translationKey) {
-      allKeys.push(translationKey);
+      var groupsByKey = _.groupBy(translationKeys, 'key');
+      console.log(groupsByKey);
+
+      return res.render('pages/add-translation', {
+        groupsByKey: groupsByKey,
+        languages: languages,
+        apps: apps,
+        selectedApp: req.query.app
+      });
     });
-
-    return res.render('pages/add-translation', {
-      allKeys: allKeys
-    });
-  });
-
+  }
 });
 
 router.post('/add-translation', function (req, res) {

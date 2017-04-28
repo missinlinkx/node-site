@@ -7,52 +7,50 @@
     <form class="form-horizontal" method="POST">
 
       <div class="row">
-        <div class="col-sm-6">
           <div class="form-group">
-            <label class="sr-only" for="app">App</label>
-            <input type="text" class="form-control" id="app" name="app" placeholder="App" onkeyup="search()" <% if (locals.prevReq) { %>
-                                                                                            value= <%= locals.prevReq.app %>
-                                                                                          <% } %> >
-          </div>
+            <label for="app" class="col-sm-2 control-label">App</label>
+            <div class="col-sm-10">
+              <select data-bind="options: availableApps, value: selectedApp" class="form-control" id="app" name="app" placeholder="App"></select>
+            </div>
         </div>
 
-        <div class="col-sm-6">
+        <!-- <div class="col-sm-6">
           <div class="form-group">
             <label class="sr-only" for="language">Language</label>
-            <input type="text" class="form-control" id="language" name="language" placeholder="Language" onkeyup="search()" <% if (locals.prevReq) { %>
-                                                                                                          value= <%= locals.prevReq.language %>
-                                                                                                        <% } %> > <!--SHOULD TAKE LANGUAGE FROM SELECTED TAB-->
+
+            <select data-bind="options: availableLanguages, value: selectedLanguage" class="form-control" id="language" name="language" placeholder="Language"></select>
+
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="row">
-        <div class="col-sm-12">
-          <div class="form-group">
-              <label class="sr-only" for="key">Key</label>
-              <input type="text" class="form-control" id="key" name="key" placeholder="Key" onkeyup="search()" <% if (locals.prevReq) { %>
-                                                                                              value= <%= locals.prevReq.key %>
-                                                                                            <% } %> >
-          </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label" for="key">Key</label>
+            <div class="col-sm-10">
+              <input data-bind="value: keyInput, valueUpdate: 'afterkeydown'" type="text" class="form-control" id="key" name="key" placeholder="originComponent##stringToBeTranslated" <% if (locals.prevReq) { %>
+                                                                                            value= <%= locals.prevReq.key %>
+                                                                                        <% } %> >
+            </div>
         </div>
       </div>
 
-      <div class="row">
+      <!-- <div class="row">
         <div class="col-sm-12">
           <div class="form-group">
               <label class="sr-only" for="translationString">Translation string</label>
-              <input type="text" class="form-control" id="translationString" name="translationString" placeholder="Translation string" onkeyup="search()" <% if (locals.prevReq) { %>
+              <input data-bind="value: stringInput, valueUpdate: 'afterkeydown'" type="text" class="form-control" id="translationString" name="translationString" placeholder="Translation string" <% if (locals.prevReq) { %>
                                                                                                                                         value= <%= locals.prevReq.translationString %>
                                                                                                                                       <% } %> >
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="row">
         <div class="form-group col-sm-12">
           <div class="checkbox">
             <label>
-              <input id="case-sensitive" type="checkbox" onclick="search()"> Enable case-sensitive search
+              <input data-bind="checked: caseSensitive" id="case-sensitive" type="checkbox"> Enable case-sensitive search
             </label>
           </div>
         </div>
@@ -64,7 +62,7 @@
             <i id="submit-btn-icon" class="fa fa-plus"></i>
             <span id="submit-btn-text">Add</span>
           </button>
-          <button type="button" class="btn btn-danger" id="btn-reset">
+          <button data-bind="click: $root.resetForm" type="button" class="btn btn-danger" id="btn-reset">
             <i class="fa fa-times"></i>
             Reset
           </button>
@@ -82,69 +80,69 @@
 
 </div>
 
-<div class="jumbotron clearfix">
+<div data-bind="visible: functionality()==='search'" class="jumbotron clearfix">
   <table class="table table-hover">
     <thead>
       <tr>
-        <th>Language</th>
+        <!-- <th>Language</th> -->
         <th>App</th>
         <th>Key</th>
-        <th>Translation String</th>
+        <!-- <th>Translation String</th> -->
         <th>Modify</th>
       </tr>
     </thead>
-    <tbody id="tBody">
-      <% locals.allKeys.forEach(function(translation,idx){ %>
-        <tr id="translation-row-<%=idx%>"  data-language="<%=translation.language%>" data-app="<%=translation.app%>" data-key="<%=translation.key%>" data-string="<%=translation.translationString%>">
-          <td class="language"><%=translation.language%></td>
-          <td class="app"><%=translation.app%></td>
-          <td class="key"><%=translation.key%></td>
-          <td class="translationString"><%=translation.translationString%></td>
-          <td class="translation-table-select">
-            <button type="button" class="btn btn-info" style="width:100%;" data-idx="<%=idx%>" onclick="select(this)">
-              <i class="fa fa-pencil-square-o fa-lg"></i>
-            </button>
-          </td>
-        </tr>
-      <% }); %>
+    <tbody id="tBody" data-bind="foreach: filteredTranslations">
+
+          <tr>
+            <!-- <td data-bind="text: language" class="language"></td> -->
+            <td data-bind="text: app" class="app"></td>
+            <td data-bind="text: key" class="key"></td>
+            <!-- <td data-bind="text: translationString" class="translationString"></td> -->
+            <td class="translation-table-select">
+              <button data-bind="click: $root.selectRow" type="button" class="btn btn-info" style="width:80px;">
+                <i class="fa fa-pencil-square-o fa-lg"></i>
+              </button>
+            </td>
+          </tr>
+
     </tbody>
   </table>
 </div>
 
 <%- contentFor('pageJS') %>
 <script type="text/javascript">
-  function select (btn) {
-    var idx = $(btn).data("idx").toString();
-    var targetRow = "table #tBody #translation-row-"+idx;
+  // function select (btn) {
+  //   var idx = $(btn).data("idx").toString();
+  //   var targetRow = "table #tBody #translation-row-"+idx;
+  //
+  //   var $appName = $(targetRow+" .app").text();
+  //   var $lang = $(targetRow+" .language").text();
+  //   var $key = $(targetRow+" .key").text();
+  //   var $translationString = $(targetRow+" .translationString").text();
+  //
+  //   $("#app").val($appName).attr('readonly', 'readonly');
+  //   $("#language").val($lang).attr('readonly', 'readonly');
+  //   $("#key").val($key).attr('readonly', 'readonly');
+  //   $("#translationString").val($translationString);
+  //
+  //   $("#functionality").val("edit");
+  //   $("#submit-btn-text").text("Save");
+  //   $("#submit-btn-icon").removeClass("fa-plus").addClass("fa-floppy-o");
+  // }
+  //
+  // function reset () {
+  //   $("#app").val("").attr('readonly', null);
+  //   $("#language").val("").attr('readonly', null);
+  //   $("#key").val("").attr('readonly', null);
+  //   $("#translationString").val("");
+  //
+  //   $("#functionality").val("add");
+  //   $("#submit-btn-text").text("Add");
+  //   $("#submit-btn-icon").removeClass("fa-floppy-o").addClass("fa-plus");
+  //
+  // }
 
-    var $appName = $(targetRow+" .app").text();
-    var $lang = $(targetRow+" .language").text();
-    var $key = $(targetRow+" .key").text();
-    var $translationString = $(targetRow+" .translationString").text();
-
-    $("#app").val($appName).attr('readonly', 'readonly');
-    $("#language").val($lang).attr('readonly', 'readonly');
-    $("#key").val($key).attr('readonly', 'readonly');
-    $("#translationString").val($translationString);
-
-    $("#functionality").val("edit");
-    $("#submit-btn-text").text("Save");
-    $("#submit-btn-icon").removeClass("fa-plus").addClass("fa-floppy-o");
-  }
-
-  function reset () {
-    $("#app").val("").attr('readonly', null);
-    $("#language").val("").attr('readonly', null);
-    $("#key").val("").attr('readonly', null);
-    $("#translationString").val("");
-
-    $("#functionality").val("add");
-    $("#submit-btn-text").text("Add");
-    $("#submit-btn-icon").removeClass("fa-floppy-o").addClass("fa-plus");
-
-  }
-
-  $("#btn-reset").on('click', reset);
+  // $("#btn-reset").on('click', reset);
 
   function objectify() {
     var translations = {};
@@ -193,53 +191,132 @@
       document.body.removeChild(link);
     });
   }
+//
+//   function search() {
+//
+//     var langInput = $('#language').val(),
+//       appInput = $('#app').val(),
+//       keyInput = $('#key').val(),
+//       stringInput= $('#translationString').val();
+//
+//
+//     $("tr.search-result-true").removeClass("search-result-true");
+//     $("tr.search-result-false").removeClass("search-result-false");
+//
+//     if (!langInput && !appInput && !keyInput && !stringInput) {
+//       return;
+//     }
+//
+//     // $("#tBody tr").each(function(idx,elem) {
+//     //   var $elem = $(elem);
+//     //
+//     //   if (!$('#case-sensitive').prop('checked')) {
+//     //     // if (((!langInput) || ($elem.data("language").toUpperCase().startsWith(langInput.toUpperCase()))) &&
+//     //     // ((!appInput) || ($elem.data("app").toUpperCase().indexOf(appInput.toUpperCase())!==-1)) &&
+//     //     // ((!keyInput) || ($elem.data("key").toUpperCase().indexOf(keyInput.toUpperCase())!==-1)) &&
+//     //     // ((!stringInput) || ($elem.data("string").toUpperCase().indexOf(stringInput.toUpperCase())!==-1)))
+//     //     // {
+//     //     //   $elem.addClass("search-result-true");
+//     //     //
+//     //     // } else {
+//     //     //   $elem.addClass("search-result-false");
+//     //     // }
+//     //
+//     //   } else {
+//     //     if (((langInput) && ($elem.data("language").startsWith(langInput))) ||
+//     //       ((appInput) && ($elem.data("app").indexOf(appInput)!==-1)) ||
+//     //       ((keyInput) && ($elem.data("key").indexOf(keyInput)!==-1)) ||
+//     //       ((stringInput) && ($elem.data("string").indexOf(stringInput)!==-1)))
+//     //     {
+//     //       $elem.addClass("search-result-true");
+//     //
+//     //     } else {
+//     //       $elem.addClass("search-result-false");
+//     //     }
+//     //   }
+//     //
+//     //
+//     // });
+//
+//   }
+//
+// search();
 
-  function search() {
-
-    var langInput = $('#language').val(),
-      appInput = $('#app').val(),
-      keyInput = $('#key').val(),
-      stringInput= $('#translationString').val();
 
 
-    $("tr.search-result-true").removeClass("search-result-true");
-    $("tr.search-result-false").removeClass("search-result-false");
+function flattenGroups () {
+  var groupsByKey = <%- JSON.stringify(locals.groupsByKey) %>;
 
-    if (!langInput && !appInput && !keyInput && !stringInput) {
+  var flat = [];
+
+  Object.keys(groupsByKey).forEach(function(listOfObj,idx){
+    groupsByKey[listOfObj].forEach(function(translationObj,idxT){
+      flat.push(translationObj);
+    });
+  });
+
+  return flat;
+}
+
+function viewModel() {
+  var self = this;
+
+  self.functionality = ko.observable('search');
+
+  self.keyInput = ko.observable();
+  self.stringInput = ko.observable();
+
+  self.groupsByKeyArray = flattenGroups();
+
+  self.availableLanguages = ko.observableArray(<%- JSON.stringify(locals.languages) %>);
+  self.selectedLanguage = ko.observable(<%- JSON.stringify(locals.selectedLang) %>);
+
+  self.availableApps = ko.observableArray(<%- JSON.stringify(locals.apps) %>);
+  self.selectedApp = ko.observable(<%- JSON.stringify(locals.selectedApp) %>);
+
+  self.caseSensitive = ko.observable(false);
+
+  self.filteredTranslations = ko.computed(function () {
+    if (self.functionality() === 'edit') {
       return;
     }
 
-    $("#tBody tr").each(function(idx,elem) {
-      var $elem = $(elem);
+    if (!self.keyInput() && !self.stringInput()) {
+      return self.groupsByKeyArray;
+    }
 
-      if (!$('#case-sensitive').prop('checked')) {
-        if (((!langInput) || ($elem.data("language").toUpperCase().startsWith(langInput.toUpperCase()))) &&
-        ((!appInput) || ($elem.data("app").toUpperCase().indexOf(appInput.toUpperCase())!==-1)) &&
-        ((!keyInput) || ($elem.data("key").toUpperCase().indexOf(keyInput.toUpperCase())!==-1)) &&
-        ((!stringInput) || ($elem.data("string").toUpperCase().indexOf(stringInput.toUpperCase())!==-1)))
-        {
-          $elem.addClass("search-result-true");
+    if (!self.caseSensitive()) {
+      return ko.utils.arrayFilter(self.groupsByKeyArray, function(translation) {
+        return (!self.keyInput() || translation.key.toUpperCase().indexOf(self.keyInput().toUpperCase()) !== -1) &&
+              (!self.stringInput() || translation.translationString.toUpperCase().indexOf(self.stringInput().toUpperCase()) !== -1);
+      });
+    } else {
+      return ko.utils.arrayFilter(self.groupsByKeyArray, function(translation) {
+        return (!self.keyInput() || translation.key.indexOf(self.keyInput()) !== -1) &&
+              (!self.stringInput() || translation.translationString.indexOf(self.stringInput()) !== -1);
+      });
+    }
+  });
 
-        } else {
-          $elem.addClass("search-result-false");
-        }
-
-      } else {
-        if (((langInput) && ($elem.data("language").startsWith(langInput))) ||
-          ((appInput) && ($elem.data("app").indexOf(appInput)!==-1)) ||
-          ((keyInput) && ($elem.data("key").indexOf(keyInput)!==-1)) ||
-          ((stringInput) && ($elem.data("string").indexOf(stringInput)!==-1)))
-        {
-          $elem.addClass("search-result-true");
-
-        } else {
-          $elem.addClass("search-result-false");
-        }
-      }
-
-
-    });
-
+  function navigator() {
+    return location.href="/add-translation?app="+self.selectedApp();
   }
-search();
+
+  self.selectedApp.subscribe(navigator);
+
+  self.selectRow = function (translation) {
+    self.keyInput(translation.key);
+    self.stringInput(translation.translationString);
+    self.functionality('edit');
+  }
+
+  self.resetForm = function () {
+    self.keyInput('');
+    self.stringInput('');
+    self.functionality('search');
+  }
+
+}
+
+ko.applyBindings(new viewModel());
 </script>
