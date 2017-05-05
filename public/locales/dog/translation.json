@@ -1,0 +1,11 @@
+{
+  "nav##home": "Woof",
+  "nav##about": "Bwuf",
+  "nav##lev": "Ruff!",
+  "nav##hanoi": "Puff",
+  "nav##palindrome": "Sniff",
+  "nav##contact": "Mrr",
+  "home##title-home": "Ruff rolf burr huff woof-huff",
+  "hanoi##move": "bark",
+  "hanoi##move_plural": "barks"
+}

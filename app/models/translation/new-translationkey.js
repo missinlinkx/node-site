@@ -6,10 +6,8 @@ function addTranslation (formData, callback) {
   var errors = [];
 
   // check user input
-  // ADD VERIFICATION FOR APP INPUT?!
-  if (!/^[A-Z]{2}$/.test(formData.language)) {
-    errors.push('Please enter a 2-letter language code in uppercase. (XX)');
-  }
+  // app and language input fed from server
+
   if (!/^[a-zA-Z][a-zA-Z]*(-[a-zA-Z]+)*#{2}.+$/.test(formData.key)) {
     errors.push('Please check the translation key formatting. (originComponent##stringToBeTranslated)');
   }
@@ -17,21 +15,12 @@ function addTranslation (formData, callback) {
     return callback(errors);
   }
   // check database for duplicate keys or translation strings (in the same language and for the same app)
-  return TranslationKey.find({$or: [{key: formData.key}, {string: formData.translationString}]}, function (err, translationKeys) {
+  return TranslationKey.find({$and: [{app: formData.app}, {key: formData.key}]}, function (err, translationKeys) {
     if (err) return callback(err);
+
     if (translationKeys && translationKeys.length) {
-      translationKeys.forEach(function (translationKey) {
-        if (translationKey.language === formData.language && translationKey.app === formData.app) {
-          if (translationKey.key === formData.key) {
-            console.log('found this key',translationKey.key,'in this language',formData.language,'already');
-            errors.push('Key already exists in this language for this app.');
-          }
-          if (translationKey.translationString === formData.translationString) {
-            console.log('found this translation',translationKey.translationString,'in this language',formData.language,'already');
-            errors.push('Translation string already exists in this language for this app.');
-          }
-        }
-      });
+      console.log('found this key',translationKeys[0].key,'already');
+      errors.push('Key already exists for this app.');
     }
 
     if (errors.length) {
@@ -40,9 +29,8 @@ function addTranslation (formData, callback) {
       // if no conflicts are found, proceed to store form data as per translation key model
       var newTranslationKey = TranslationKey({
         app: formData.app,
-        language: formData.language,
         key: formData.key,
-        translationString: formData.translationString
+        translationStrings: {[formData.language]: formData.translationStrings}
       });
 
       // save new user to database
