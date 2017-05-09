@@ -1,6 +1,6 @@
 <div class="jumbotron clearfix">
   <h2>Translation keys</h2>
-  <p>Fill in the input below to add a new translation key for the selected app, select one from the table below to modify its corresponding strings, or delete it:</p>
+  <p>Select an application to view existing translation strings, and fill in the key input to search for or add a new translation key for the selected app.</p>
 
   <!-- SEARCH/ADD KEY -->
   <div data-bind="visible: functionality()==='search'" class="container col-sm-6">
@@ -42,10 +42,7 @@
             <i id="submit-btn-icon" class="fa fa-plus"></i>
             <span id="submit-btn-text">Add key</span>
           </button>
-          <a data-bind="attr: {href: exportUrl}" class="btn btn-info" id="btn-export">
-            <i class="fa fa-cloud-download"></i>
-            Export
-          </a>
+
         </div>
       </div>
 
@@ -174,10 +171,38 @@
 
     </form>
   </div>
+</div>
+<div class="jumbotron clearfix">
+  <p>Export all key/string pairs for the selected app and language.</p>
+  <div data-bind="visible: functionality()==='search'" class="container col-sm-6">
+    <div class="row">
+      <div class="form-group col-sm-12">
+        <select data-bind="options: availableLanguages, value: selectedLanguage, optionsCaption:'Select a language to enable export'" class="form-control" id="app" name="app" placeholder="App"></select>
+      </div>
+    </div>
+    <div data-bind="visible: !enableExport()" class="row">
+      <div class="form-group col-sm-12">
+        <a disabled class="btn btn-info" id="btn-export">
+          <i class="fa fa-cloud-download"></i>
+          Export
+        </a>
+      </div>
+    </div>
+    <div data-bind="visible: enableExport()" class="row">
+      <div class="form-group col-sm-12">
+        <a data-bind="attr: {href: exportUrl}"  class="btn btn-info" id="btn-export">
+          <i class="fa fa-cloud-download"></i>
+          Export
+        </a>
+      </div>
+    </div>
+  </div>
 
 </div>
 
 <div data-bind="visible: functionality()==='search'" class="jumbotron clearfix">
+  <p>Select a key from the table to modify its corresponding strings, or delete it.</p>
+
   <table class="table table-hover">
     <thead>
       <tr>
@@ -194,7 +219,7 @@
           <tr>
             <!-- <td data-bind="text: language" class="language"></td> -->
             <!-- <td data-bind="text: app" class="app"></td> -->
-            <td ><strong data-bind="text: key" class="key"></strong></td>
+            <td data-bind="text: key" class="key"></td>
             <!-- <td data-bind="text: translationString" class="translationString"></td> -->
             <td class="translation-table-select">
               <button data-bind="click: $root.selectRow" type="button" class="btn btn-info" style="width:80px;">
@@ -261,12 +286,17 @@ function viewModel() {
   self.keyArray = <%- JSON.stringify(locals.allKeys) %>;
 
   self.availableLanguages = ko.observableArray(<%- JSON.stringify(locals.languages) %>);
+  self.selectedLanguage = ko.observable();
 
   self.availableApps = ko.observableArray(<%- JSON.stringify(locals.apps) %>);
   self.selectedApp = ko.observable(<%- JSON.stringify(locals.selectedApp) %>);
 
   self.exportUrl = ko.computed(function () {
-    return "../export?app="+self.selectedApp();
+    return "../export?app="+self.selectedApp()+'&lang='+self.selectedLanguage();
+  });
+
+  self.enableExport = ko.computed(function() {
+    return self.selectedLanguage()!==undefined;
   });
 
   self.caseSensitive = ko.observable(false);

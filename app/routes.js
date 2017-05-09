@@ -282,121 +282,120 @@ router.post('/add-translation', function (req, res) {
     apps.forEach(function (app) {
       appList.push(app.name);
     });
+
+    // load languages from DB collection
+    // and save all translation strings entered in form to object
+
+    var languageList = [];
+    var translationStrings = {};
+
+    Language.find({}, function (err, languages) {
+      languages.forEach(function (language) {
+        languageList.push(language.code);
+      });
+      languageList.forEach(function (language) {
+        translationStrings[language] = req.body[language];
+      });
+
+      var formData = {
+        app: req.body.app,
+        key: req.body.key,
+        translationStrings: translationStrings,
+        functionality: req.body.functionality
+      }
+
+      if (formData.functionality === 'search') {
+        addTranslation(formData, function (err, savedTranslationKey) {
+          if (err) {
+            var errorMessage = err;
+            if (Array.isArray(err)) {
+              errorMessage = err.join('\n');
+            }
+            req.session.flashes['errorMessage'] = errorMessage;
+            req.session.flashes['prevReq'] = req.body;
+            if (!req.query.app || appList.indexOf(req.query.app)===-1) {
+              return res.redirect('/add-translation?app='+defaultApp);
+            } else {
+              TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
+                if (err) console.log(err);
+                return res.redirect('/add-translation?app='+req.query.app);
+              });
+            }
+          } else {
+            req.session.flashes['successMessage'] = 'Your translation key was added successfully!';
+            if (!req.query.app || appList.indexOf(req.query.app)===-1) {
+              return res.redirect('/add-translation?app='+defaultApp);
+            } else {
+              TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
+                if (err) console.log(err);
+                return res.redirect('/add-translation?app='+req.query.app);
+              });
+            }
+          }
+        });
+      } else if (formData.functionality === 'edit') {
+        editTranslation(formData, function (err, savedTranslationKey) {
+          if (err) {
+            var errorMessage = err;
+            if (Array.isArray(err)) {
+              errorMessage = err.join('\n');
+            }
+            req.session.flashes['errorMessage'] = errorMessage;
+            req.session.flashes['prevReq'] = req.body;
+
+            if (!req.query.app || appList.indexOf(req.query.app)===-1) {
+              return res.redirect('/add-translation?app='+defaultApp);
+            } else {
+              TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
+                if (err) console.log(err);
+                return res.redirect('/add-translation?app='+req.query.app);
+              });
+            }
+          } else {
+            req.session.flashes['successMessage'] = 'The translation key was modified successfully!';
+            if (!req.query.app || appList.indexOf(req.query.app)===-1) {
+              return res.redirect('/add-translation?app='+defaultApp);
+            } else {
+              TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
+                if (err) console.log(err);
+                return res.redirect('/add-translation?app='+req.query.app);
+              });
+            }
+          }
+        });
+      } else if (formData.functionality === 'delete') {
+        deleteTranslation(formData, function (err, savedTranslationKey) {
+          if (err) {
+            var errorMessage = err;
+            if (Array.isArray(err)) {
+              errorMessage = err.join('\n');
+            }
+            req.session.flashes['errorMessage'] = errorMessage;
+            req.session.flashes['prevReq'] = req.body;
+
+            if (!req.query.app || appList.indexOf(req.query.app)===-1) {
+              return res.redirect('/add-translation?app='+defaultApp);
+            } else {
+              TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
+                if (err) console.log(err);
+                return res.redirect('/add-translation?app='+req.query.app);
+              });
+            }
+          } else {
+            req.session.flashes['successMessage'] = 'The translation key was deleted!';
+            if (!req.query.app || appList.indexOf(req.query.app)===-1) {
+              return res.redirect('/add-translation?app='+defaultApp);
+            } else {
+              TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
+                if (err) console.log(err);
+                return res.redirect('/add-translation?app='+req.query.app);
+              });
+            }
+          }
+        });
+      }
+    });
   });
-
-  // load languages from DB collection
-  // and save all translation strings entered in form to object
-
-  var languageList = [];
-  var translationStrings = {};
-
-  Language.find({}, function (err, languages) {
-    languages.forEach(function (language) {
-      languageList.push(language.code);
-    });
-    languageList.forEach(function (language) {
-      translationStrings[language.code] = req.body[language.code];
-    });
-  });
-
-  var formData = {
-    app: req.body.app,
-    key: req.body.key,
-    translationStrings: translationStrings,
-    functionality: req.body.functionality
-  }
-
-  if (formData.functionality === 'search') {
-    addTranslation(formData, function (err, savedTranslationKey) {
-      if (err) {
-        var errorMessage = err;
-        if (Array.isArray(err)) {
-          errorMessage = err.join('\n');
-        }
-        req.session.flashes['errorMessage'] = errorMessage;
-        req.session.flashes['prevReq'] = req.body;
-        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
-          return res.redirect('/add-translation?app='+defaultApp);
-        } else {
-          TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
-            if (err) console.log(err);
-            return res.redirect('/add-translation?app='+req.query.app);
-          });
-        }
-      } else {
-        req.session.flashes['successMessage'] = 'Your translation key was added successfully!';
-        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
-          return res.redirect('/add-translation?app='+defaultApp);
-        } else {
-          TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
-            if (err) console.log(err);
-            return res.redirect('/add-translation?app='+req.query.app);
-          });
-        }
-      }
-    });
-  } else if (formData.functionality === 'edit') {
-    editTranslation(formData, function (err, savedTranslationKey) {
-      if (err) {
-        var errorMessage = err;
-        if (Array.isArray(err)) {
-          errorMessage = err.join('\n');
-        }
-        req.session.flashes['errorMessage'] = errorMessage;
-        req.session.flashes['prevReq'] = req.body;
-
-        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
-          return res.redirect('/add-translation?app='+defaultApp);
-        } else {
-          TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
-            if (err) console.log(err);
-            return res.redirect('/add-translation?app='+req.query.app);
-          });
-        }
-      } else {
-        req.session.flashes['successMessage'] = 'The translation key was modified successfully!';
-        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
-          return res.redirect('/add-translation?app='+defaultApp);
-        } else {
-          TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
-            if (err) console.log(err);
-            return res.redirect('/add-translation?app='+req.query.app);
-          });
-        }
-      }
-    });
-  } else if (formData.functionality === 'delete') {
-    deleteTranslation(formData, function (err, savedTranslationKey) {
-      if (err) {
-        var errorMessage = err;
-        if (Array.isArray(err)) {
-          errorMessage = err.join('\n');
-        }
-        req.session.flashes['errorMessage'] = errorMessage;
-        req.session.flashes['prevReq'] = req.body;
-
-        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
-          return res.redirect('/add-translation?app='+defaultApp);
-        } else {
-          TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
-            if (err) console.log(err);
-            return res.redirect('/add-translation?app='+req.query.app);
-          });
-        }
-      } else {
-        req.session.flashes['successMessage'] = 'The translation key was deleted!';
-        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
-          return res.redirect('/add-translation?app='+defaultApp);
-        } else {
-          TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
-            if (err) console.log(err);
-            return res.redirect('/add-translation?app='+req.query.app);
-          });
-        }
-      }
-    });
-  }
-
 });
 
 router.get('/export', function (req, res) {
@@ -416,7 +415,7 @@ router.get('/export', function (req, res) {
         if (err) console.log(err);
 
         var transJSON = {};
-        var language = 'EN';
+        var language = req.query.lang;
 
         translationKeys.forEach(function(translationKey) {
           transJSON[translationKey.key] = translationKey.translationStrings[language];
