@@ -1,4 +1,4 @@
-// user model for new-user creation in mongoDB
+// translation model for new translation creation in mongoDB
 
 var mongoose = require('mongoose');
 // mongoose.connect('mongodb://localhost/nodesite_users'); moved connect to routes file to handle multiple models

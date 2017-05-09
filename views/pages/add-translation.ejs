@@ -42,10 +42,10 @@
             <i id="submit-btn-icon" class="fa fa-plus"></i>
             <span id="submit-btn-text">Add key</span>
           </button>
-          <button type="button" class="btn btn-info" id="btn-export">
+          <a data-bind="attr: {href: exportUrl}" class="btn btn-info" id="btn-export">
             <i class="fa fa-cloud-download"></i>
             Export
-          </button>
+          </a>
         </div>
       </div>
 
@@ -214,152 +214,41 @@
 
 <%- contentFor('pageJS') %>
 <script type="text/javascript">
-  // function select (btn) {
-  //   var idx = $(btn).data("idx").toString();
-  //   var targetRow = "table #tBody #translation-row-"+idx;
   //
-  //   var $appName = $(targetRow+" .app").text();
-  //   var $lang = $(targetRow+" .language").text();
-  //   var $key = $(targetRow+" .key").text();
-  //   var $translationString = $(targetRow+" .translationString").text();
+  // $("#btn-export").on('click', fExport);
   //
-  //   $("#app").val($appName).attr('readonly', 'readonly');
-  //   $("#language").val($lang).attr('readonly', 'readonly');
-  //   $("#key").val($key).attr('readonly', 'readonly');
-  //   $("#translationString").val($translationString);
+  // function makeTextFile(text) {
+  //   var textFile = null;
+  //   var data = new Blob([text], {type: 'text/plain'});
   //
-  //   $("#functionality").val("edit");
-  //   $("#submit-btn-text").text("Save");
-  //   $("#submit-btn-icon").removeClass("fa-plus").addClass("fa-floppy-o");
+  //   // If we are replacing a previously generated file we need to
+  //   // manually revoke the object URL to avoid memory leaks.
+  //   if (textFile !== null) {
+  //     window.URL.revokeObjectURL(textFile);
+  //   }
+  //
+  //   textFile = window.URL.createObjectURL(data);
+  //
+  //   // returns a URL you can use as a href
+  //   return textFile;
+  // };
+  //
+  // function fExport() {
+  //   var transJSON = objectify();
+  //
+  //   var link = document.createElement('a');
+  //   link.setAttribute('download', 'translation.json');
+  //   link.href = makeTextFile(JSON.stringify(transJSON, null, 2));
+  //   document.body.appendChild(link);
+  //
+  //   // wait for the link to be added to the document
+  //   window.requestAnimationFrame(function () {
+  //     var event = new MouseEvent('click');
+  //     link.dispatchEvent(event);
+  //     document.body.removeChild(link);
+  //   });
   // }
-  //
-  // function reset () {
-  //   $("#app").val("").attr('readonly', null);
-  //   $("#language").val("").attr('readonly', null);
-  //   $("#key").val("").attr('readonly', null);
-  //   $("#translationString").val("");
-  //
-  //   $("#functionality").val("add");
-  //   $("#submit-btn-text").text("Add");
-  //   $("#submit-btn-icon").removeClass("fa-floppy-o").addClass("fa-plus");
-  //
-  // }
 
-  // $("#btn-reset").on('click', reset);
-
-  function objectify() {
-    var translations = {};
-    $("#tBody tr").each(function (idx,elem) {
-      var $elem = $(elem);
-      if ($elem.hasClass("search-result-true") || $elem.attr("class") === "" || !$elem.attr("class")) {
-        var $elemid = "#"+$elem.attr("id").toString();
-        var key = $($elemid+" .key").text();
-        var $translationString = $($elemid+" .translationString").text();
-        translations[key] = $translationString; //why in the Norse Gods' name does this not work if I call it $key? :P
-      }
-    });
-    return translations;
-  }
-
-  $("#btn-export").on('click', fExport);
-
-  function makeTextFile(text) {
-    var textFile = null;
-    var data = new Blob([text], {type: 'text/plain'});
-
-    // If we are replacing a previously generated file we need to
-    // manually revoke the object URL to avoid memory leaks.
-    if (textFile !== null) {
-      window.URL.revokeObjectURL(textFile);
-    }
-
-    textFile = window.URL.createObjectURL(data);
-
-    // returns a URL you can use as a href
-    return textFile;
-  };
-
-  function fExport() {
-    var transJSON = objectify();
-
-    var link = document.createElement('a');
-    link.setAttribute('download', 'translation.json');
-    link.href = makeTextFile(JSON.stringify(transJSON, null, 2));
-    document.body.appendChild(link);
-
-    // wait for the link to be added to the document
-    window.requestAnimationFrame(function () {
-      var event = new MouseEvent('click');
-      link.dispatchEvent(event);
-      document.body.removeChild(link);
-    });
-  }
-//
-//   function search() {
-//
-//     var langInput = $('#language').val(),
-//       appInput = $('#app').val(),
-//       keyInput = $('#key').val(),
-//       stringInput= $('#translationString').val();
-//
-//
-//     $("tr.search-result-true").removeClass("search-result-true");
-//     $("tr.search-result-false").removeClass("search-result-false");
-//
-//     if (!langInput && !appInput && !keyInput && !stringInput) {
-//       return;
-//     }
-//
-//     // $("#tBody tr").each(function(idx,elem) {
-//     //   var $elem = $(elem);
-//     //
-//     //   if (!$('#case-sensitive').prop('checked')) {
-//     //     // if (((!langInput) || ($elem.data("language").toUpperCase().startsWith(langInput.toUpperCase()))) &&
-//     //     // ((!appInput) || ($elem.data("app").toUpperCase().indexOf(appInput.toUpperCase())!==-1)) &&
-//     //     // ((!keyInput) || ($elem.data("key").toUpperCase().indexOf(keyInput.toUpperCase())!==-1)) &&
-//     //     // ((!stringInput) || ($elem.data("string").toUpperCase().indexOf(stringInput.toUpperCase())!==-1)))
-//     //     // {
-//     //     //   $elem.addClass("search-result-true");
-//     //     //
-//     //     // } else {
-//     //     //   $elem.addClass("search-result-false");
-//     //     // }
-//     //
-//     //   } else {
-//     //     if (((langInput) && ($elem.data("language").startsWith(langInput))) ||
-//     //       ((appInput) && ($elem.data("app").indexOf(appInput)!==-1)) ||
-//     //       ((keyInput) && ($elem.data("key").indexOf(keyInput)!==-1)) ||
-//     //       ((stringInput) && ($elem.data("string").indexOf(stringInput)!==-1)))
-//     //     {
-//     //       $elem.addClass("search-result-true");
-//     //
-//     //     } else {
-//     //       $elem.addClass("search-result-false");
-//     //     }
-//     //   }
-//     //
-//     //
-//     // });
-//
-//   }
-//
-// search();
-
-
-
-// function flattenGroups () {
-//   var groupsByKey = <%- JSON.stringify(locals.groupsByKey) %>;
-//
-//   var flat = [];
-//
-//   Object.keys(groupsByKey).forEach(function(listOfObj,idx){
-//     groupsByKey[listOfObj].forEach(function(translationObj,idxT){
-//       flat.push(translationObj);
-//     });
-//   });
-//
-//   return flat;
-// }
 
 function viewModel() {
   var self = this;
@@ -375,6 +264,10 @@ function viewModel() {
 
   self.availableApps = ko.observableArray(<%- JSON.stringify(locals.apps) %>);
   self.selectedApp = ko.observable(<%- JSON.stringify(locals.selectedApp) %>);
+
+  self.exportUrl = ko.computed(function () {
+    return "../export?app="+self.selectedApp();
+  });
 
   self.caseSensitive = ko.observable(false);
 

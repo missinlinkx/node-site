@@ -29,7 +29,17 @@ var addTranslation = require('./models/translation/new-translationkey.js');
 // module to modify and save existing translationKeys based on form data
 var editTranslation = require('./models/translation/edit-translationkey.js');
 // module to delete existing translationKeys based on form data
-var editTranslation = require('./models/translation/delete-translationkey.js');
+var deleteTranslation = require('./models/translation/delete-translationkey.js');
+
+// mongoose language Schema
+var Language = require('./models/language/language-model.js');
+// module to create and save new languages
+var addLanguage = require('./models/language/new-language.js');
+
+// mongoose language Schema
+var App = require('./models/app/app-model.js');
+// module to create and save new apps
+var addApp = require('./models/app/new-app.js');
 
 // algorithm modules
 var palindrome = require('../palindr-serv.js');
@@ -227,35 +237,66 @@ router.post('/register', function (req, res) {
 
 // route for add-translation page
 router.get('/add-translation', function (req, res) {
-  var languages = ['CT','EN','DG','RO'],
-    apps = ['some-app','someotherapp','default'],
-    defaultApp = apps[2];
+  var appList = [];
 
-  if (!req.query.app || apps.indexOf(req.query.app)===-1) {
-    return res.redirect('/add-translation?app='+defaultApp);
-  } else {
-    TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
-      if (err) console.log(err);
-
-      return res.render('pages/add-translation', {
-        allKeys: translationKeys,
-        languages: languages,
-        apps: apps,
-        selectedApp: req.query.app
-      });
+  App.find({}, function (err, apps) {
+    apps.forEach(function (app) {
+      appList.push(app.name);
     });
-  }
+
+    // sort app list? :-?
+    var defaultApp = appList[0];
+
+    // load languages from DB collection
+    var languageList = [];
+    Language.find({}, function (err, languages) {
+      languages.forEach(function (language) {
+        languageList.push(language.code);
+      });
+
+      if (!req.query.app || appList.indexOf(req.query.app)===-1) {
+        return res.redirect('/add-translation?app='+defaultApp);
+      } else {
+        TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
+          if (err) console.log(err);
+
+          return res.render('pages/add-translation', {
+            allKeys: translationKeys.sort(function(obj1,obj2){ return (obj1.key > obj2.key) ? 1 : ((obj1.key < obj2.key) ? -1 : 0); }),
+            languages: languageList.sort(),
+            apps: appList,
+            selectedApp: req.query.app
+          });
+        });
+      }
+
+    });
+  });
+
 });
 
 router.post('/add-translation', function (req, res) {
-  var apps = ['some-app','someotherapp','default'];
-  var defaultApp = apps[2];
+  var appList = [];
+  var defaultApp = appList[0];
 
-  // save all translation strings entered in form to object
-  var languages = ['CT','EN','DG','RO'];
+  App.find({}, function (err, apps) {
+    apps.forEach(function (app) {
+      appList.push(app.name);
+    });
+  });
+
+  // load languages from DB collection
+  // and save all translation strings entered in form to object
+
+  var languageList = [];
   var translationStrings = {};
-  languages.forEach(function (language) {
-    translationStrings[language] = req.body[language];
+
+  Language.find({}, function (err, languages) {
+    languages.forEach(function (language) {
+      languageList.push(language.code);
+    });
+    languageList.forEach(function (language) {
+      translationStrings[language.code] = req.body[language.code];
+    });
   });
 
   var formData = {
@@ -274,8 +315,7 @@ router.post('/add-translation', function (req, res) {
         }
         req.session.flashes['errorMessage'] = errorMessage;
         req.session.flashes['prevReq'] = req.body;
-
-        if (!req.query.app || apps.indexOf(req.query.app)===-1) {
+        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
           return res.redirect('/add-translation?app='+defaultApp);
         } else {
           TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
@@ -284,9 +324,8 @@ router.post('/add-translation', function (req, res) {
           });
         }
       } else {
-
         req.session.flashes['successMessage'] = 'Your translation key was added successfully!';
-        if (!req.query.app || apps.indexOf(req.query.app)===-1) {
+        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
           return res.redirect('/add-translation?app='+defaultApp);
         } else {
           TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
@@ -306,7 +345,7 @@ router.post('/add-translation', function (req, res) {
         req.session.flashes['errorMessage'] = errorMessage;
         req.session.flashes['prevReq'] = req.body;
 
-        if (!req.query.app || apps.indexOf(req.query.app)===-1) {
+        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
           return res.redirect('/add-translation?app='+defaultApp);
         } else {
           TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
@@ -316,7 +355,7 @@ router.post('/add-translation', function (req, res) {
         }
       } else {
         req.session.flashes['successMessage'] = 'The translation key was modified successfully!';
-        if (!req.query.app || apps.indexOf(req.query.app)===-1) {
+        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
           return res.redirect('/add-translation?app='+defaultApp);
         } else {
           TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
@@ -336,7 +375,7 @@ router.post('/add-translation', function (req, res) {
         req.session.flashes['errorMessage'] = errorMessage;
         req.session.flashes['prevReq'] = req.body;
 
-        if (!req.query.app || apps.indexOf(req.query.app)===-1) {
+        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
           return res.redirect('/add-translation?app='+defaultApp);
         } else {
           TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
@@ -346,7 +385,7 @@ router.post('/add-translation', function (req, res) {
         }
       } else {
         req.session.flashes['successMessage'] = 'The translation key was deleted!';
-        if (!req.query.app || apps.indexOf(req.query.app)===-1) {
+        if (!req.query.app || appList.indexOf(req.query.app)===-1) {
           return res.redirect('/add-translation?app='+defaultApp);
         } else {
           TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
@@ -357,5 +396,35 @@ router.post('/add-translation', function (req, res) {
       }
     });
   }
+
+});
+
+router.get('/export', function (req, res) {
+
+  var appList = [],
+    defaultApp = appList[0];
+
+  App.find({}, function (err, apps) {
+    apps.forEach(function (app) {
+      appList.push(app.name);
+    });
+    if (!req.query.app || appList.indexOf(req.query.app)===-1) {
+      req.session.flashes['errorMessage'] = 'Please select a valid app from the list before attempting export.';
+      return res.redirect('/add-translation');
+    } else {
+      TranslationKey.find({app:req.query.app}, function (err, translationKeys) {
+        if (err) console.log(err);
+
+        var transJSON = {};
+        var language = 'EN';
+
+        translationKeys.forEach(function(translationKey) {
+          transJSON[translationKey.key] = translationKey.translationStrings[language];
+        });
+
+        return res.json(transJSON);
+      });
+    }
+  });
 
 });

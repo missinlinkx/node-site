@@ -6,15 +6,15 @@ var TranslationKey = require('./app/models/translation/translation-model.js');
 // module to create and save new translationKeys based on form data
 var addTranslation = require('./app/models/translation/new-translationkey.js');
 
-var transJSON = require('./public/locales/dog/translation.json');
+var transJSON = require('./public/locales/en/translation0.json');
 
 console.log(typeof transJSON);
 
 Object.keys(transJSON).forEach(
   (trKey) => {
     var JSONdata = {
-      app: 'default',
-      language: 'DG',
+      app: 'sso-web-app',
+      language: 'EN',
       key: trKey,
       translationStrings: transJSON[trKey]
     }
