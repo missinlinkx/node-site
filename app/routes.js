@@ -5,6 +5,13 @@ var path = require('path');
 // require underscore
 var _ = require('underscore');
 
+var fs = require('fs');
+
+// require multer
+var multer  = require('multer');
+var storage = multer.memoryStorage();
+var upload = multer({ storage: storage });
+
 // verify if user is logged in and redirect if not
 var authGuardModule = require('../auth-guard.js');
 
@@ -36,7 +43,7 @@ var Language = require('./models/language/language-model.js');
 // module to create and save new languages
 var addLanguage = require('./models/language/new-language.js');
 
-// mongoose language Schema
+// mongoose app Schema
 var App = require('./models/app/app-model.js');
 // module to create and save new apps
 var addApp = require('./models/app/new-app.js');
@@ -274,7 +281,60 @@ router.get('/add-translation', function (req, res) {
 
 });
 
-router.post('/add-translation', function (req, res) {
+router.post('/add-translation', upload.single('translations'), function (req, res) {
+  console.log(req.file);
+  if (req.file.buffer) {
+    var transJSON = JSON.parse(req.file.buffer.toString('utf-8'));
+    console.log(transJSON);
+
+    Object.keys(transJSON).forEach(
+      (trKey) => {
+        var JSONdata = {
+          app: req.query.app,
+          language: 'KR',
+          key: trKey,
+          translationStrings: transJSON[trKey]
+        }
+        console.log(JSONdata.key);
+        TranslationKey.find({key: JSONdata.key}, function (err, translationKeys) {
+          if (err) {
+            var errorMessage = err;
+            if (Array.isArray(err)) {
+              errorMessage = err.join('\n');
+            }
+            console.log(err);
+          }
+          console.log(translationKeys);
+          if (translationKeys && translationKeys.length) {
+            var strings = translationKeys[0].translationStrings;
+            strings[JSONdata.language] = JSONdata.translationStrings;
+            translationKeys[0].translationStrings = strings;
+
+            translationKeys[0].markModified('translationStrings');
+            translationKeys[0].save(function(err, savedTranslationKey) {
+              if (err) throw err;
+
+              console.log('updated:', savedTranslationKey);
+            });
+
+          } else {
+            addTranslation(JSONdata, function (err, savedTranslationKey) {
+              if (err) {
+                var errorMessage = err;
+                if (Array.isArray(err)) {
+                  errorMessage = err.join('\n');
+                }
+                console.log(err);
+              }
+              console.log('saved:',savedTranslationKey);
+            });
+          }
+
+        });
+      });
+    return res.redirect('/add-translation?app='+req.query.app);
+  }
+
   var appList = [];
   var defaultApp = appList[0];
 
