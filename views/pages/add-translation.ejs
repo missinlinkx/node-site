@@ -198,10 +198,10 @@
     <form enctype="multipart/form-data" class="form-horizontal" method="POST">
       <div class="row">
         <div class="col-sm-11">
-          <input type="file" name="translations" id="translations">
+          <input data-bind="value:selectedFile" type="file" name="translations" id="translations">
         </div>
         <div class="col-sm-1">
-          <button type="submit" class="btn btn-info">
+          <button data-bind="enable: enableImport()" type="submit" class="btn btn-info">
             <i class="fa fa-cloud-upload"></i>
             Import
           </button>
@@ -296,6 +296,8 @@ function viewModel() {
 
   self.keyArray = <%- JSON.stringify(locals.allKeys) %>;
 
+  self.selectedFile = ko.observable();
+
   self.availableLanguages = ko.observableArray(<%- JSON.stringify(locals.languages) %>);
   self.selectedLanguage = ko.observable();
 
@@ -308,6 +310,10 @@ function viewModel() {
 
   self.enableExport = ko.computed(function() {
     return self.selectedLanguage()!==undefined;
+  });
+
+  self.enableImport = ko.computed(function() {
+    return self.selectedLanguage()!==undefined && self.selectedFile();
   });
 
   self.caseSensitive = ko.observable(false);
