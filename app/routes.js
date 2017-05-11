@@ -283,7 +283,7 @@ router.get('/add-translation', function (req, res) {
 
 router.post('/add-translation', upload.single('translations'), function (req, res) {
   console.log(req.file);
-  if (req.file.buffer) {
+  if (req.file) {
     var transJSON = JSON.parse(req.file.buffer.toString('utf-8'));
     console.log(transJSON);
 
@@ -291,7 +291,7 @@ router.post('/add-translation', upload.single('translations'), function (req, re
       (trKey) => {
         var JSONdata = {
           app: req.query.app,
-          language: 'KR',
+          language: req.body.language,
           key: trKey,
           translationStrings: transJSON[trKey]
         }

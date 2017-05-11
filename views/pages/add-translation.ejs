@@ -176,26 +176,26 @@
 <div class="jumbotron clearfix">
   <p>Export all key/string pairs or import a translation file for the selected app and language.</p>
   <div data-bind="visible: functionality()==='search'" class="container col-sm-6">
-
-    <div class="row">
-      <div class="col-sm-11">
-        <select data-bind="options: availableLanguages, value: selectedLanguage, optionsCaption:'Select a language to enable import/export'" class="form-control" id="app" name="app" placeholder="App"></select>
-      </div>
-      <div data-bind="visible: !enableExport()" class="col-sm-1">
-        <a disabled class="btn btn-info" id="btn-export">
-          <i class="fa fa-cloud-download"></i>
-          Export
-        </a>
-      </div>
-      <div data-bind="visible: enableExport()" class="col-sm-1">
-        <a data-bind="attr: {href: exportUrl}"  class="btn btn-info" id="btn-export">
-          <i class="fa fa-cloud-download"></i>
-          Export
-        </a>
-      </div>
-    </div>
-
     <form enctype="multipart/form-data" class="form-horizontal" method="POST">
+
+      <div class="row">
+        <div class="col-sm-11">
+          <select data-bind="options: availableLanguages, value: selectedLanguage, optionsCaption:'Select a language to enable import/export'" class="form-control" id="language" name="language" placeholder="Language"></select>
+        </div>
+        <div data-bind="visible: !enableExport()" class="col-sm-1">
+          <a disabled class="btn btn-info" id="btn-export">
+            <i class="fa fa-cloud-download"></i>
+            Export
+          </a>
+        </div>
+        <div data-bind="visible: enableExport()" class="col-sm-1">
+          <a data-bind="attr: {href: exportUrl}"  class="btn btn-info" id="btn-export">
+            <i class="fa fa-cloud-download"></i>
+            Export
+          </a>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col-sm-11">
           <input data-bind="value:selectedFile" type="file" name="translations" id="translations">
