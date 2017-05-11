@@ -5,8 +5,6 @@ var path = require('path');
 // require underscore
 var _ = require('underscore');
 
-var fs = require('fs');
-
 // require multer
 var multer  = require('multer');
 var storage = multer.memoryStorage();
@@ -37,6 +35,9 @@ var addTranslation = require('./models/translation/new-translationkey.js');
 var editTranslation = require('./models/translation/edit-translationkey.js');
 // module to delete existing translationKeys based on form data
 var deleteTranslation = require('./models/translation/delete-translationkey.js');
+
+//translation key save to mongo DB
+var trKeyPull = require('../translation-key-pull-module.js');
 
 // mongoose language Schema
 var Language = require('./models/language/language-model.js');
@@ -284,54 +285,12 @@ router.get('/add-translation', function (req, res) {
 router.post('/add-translation', upload.single('translations'), function (req, res) {
   console.log(req.file);
   if (req.file) {
+    // parse uploaded file
     var transJSON = JSON.parse(req.file.buffer.toString('utf-8'));
-    console.log(transJSON);
 
-    Object.keys(transJSON).forEach(
-      (trKey) => {
-        var JSONdata = {
-          app: req.query.app,
-          language: req.body.language,
-          key: trKey,
-          translationStrings: transJSON[trKey]
-        }
-        console.log(JSONdata.key);
-        TranslationKey.find({key: JSONdata.key}, function (err, translationKeys) {
-          if (err) {
-            var errorMessage = err;
-            if (Array.isArray(err)) {
-              errorMessage = err.join('\n');
-            }
-            console.log(err);
-          }
-          console.log(translationKeys);
-          if (translationKeys && translationKeys.length) {
-            var strings = translationKeys[0].translationStrings;
-            strings[JSONdata.language] = JSONdata.translationStrings;
-            translationKeys[0].translationStrings = strings;
+    // key import
+    trKeyPull(transJSON, req.query.app, req.body.language);
 
-            translationKeys[0].markModified('translationStrings');
-            translationKeys[0].save(function(err, savedTranslationKey) {
-              if (err) throw err;
-
-              console.log('updated:', savedTranslationKey);
-            });
-
-          } else {
-            addTranslation(JSONdata, function (err, savedTranslationKey) {
-              if (err) {
-                var errorMessage = err;
-                if (Array.isArray(err)) {
-                  errorMessage = err.join('\n');
-                }
-                console.log(err);
-              }
-              console.log('saved:',savedTranslationKey);
-            });
-          }
-
-        });
-      });
     return res.redirect('/add-translation?app='+req.query.app);
   }
 
