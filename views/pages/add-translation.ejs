@@ -173,9 +173,9 @@
   </div>
 </div>
 
-<div class="jumbotron clearfix">
+<div data-bind="visible: functionality()==='search'" class="jumbotron clearfix">
   <p>Export all key/string pairs or import a translation file for the selected app and language.</p>
-  <div data-bind="visible: functionality()==='search'" class="container col-sm-6">
+  <div class="container col-sm-6">
     <form enctype="multipart/form-data" class="form-horizontal" method="POST">
 
         <div class="form-group">
