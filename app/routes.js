@@ -15,7 +15,8 @@ var authGuardModule = require('../auth-guard.js');
 
 // require mongoose and establish DB connection
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/nodesite_users');
+// mongoose.connect('mongodb://localhost/nodesite_users');
+mongoose.connect('mongodb://207.154.208.69/translation_mgmt');
 
 // mongoose user schema
 var User = require('./models/user/user-model.js');
